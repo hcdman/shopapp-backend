@@ -1,7 +1,9 @@
 package com.example.shopapp.controller;
 
 import com.example.shopapp.dto.ProductDTO;
+import com.example.shopapp.services.IProductService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +23,10 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/products")
+@RequestMapping("${api.prefix}/products")
+@RequiredArgsConstructor
 public class ProductController {
+    private final IProductService productService;
     //Get all products
     @GetMapping("")
     ResponseEntity<String> getAllProducts(@RequestParam(value = "page",defaultValue = "1") int page,@RequestParam(value="page",defaultValue = "2") int limit)
@@ -36,8 +40,8 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body("Product have id "+ id);
     }
     //Insert a product
-    @PostMapping(value = "upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> insertProduct(@Valid ProductDTO product,
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createProduct(@Valid ProductDTO productDTO,
                                            @ModelAttribute("file") MultipartFile file,
                                            BindingResult result) {
         try {
@@ -54,7 +58,7 @@ public class ProductController {
 
             // Process the file (store, rename, etc.)
             String filename = storeFile(file);
-            product.setThumbnail(filename);
+            productDTO.setThumbnail(filename);
 
             // Handle validation errors
             if (result.hasErrors()) {
@@ -68,7 +72,7 @@ public class ProductController {
             // Save the product
             // productService.saveProduct(product);
 
-            return ResponseEntity.status(HttpStatus.OK).body("Insert a product successfully");
+            return ResponseEntity.status(HttpStatus.OK).body("create a product successfully");
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error processing the file: " + e.getMessage());
