@@ -8,5 +8,5 @@ import java.util.List;
 
 //no need annotation repository because when extends super class JpaRepository Java Spring boot know that is repository
 public interface CategoryRepository extends JpaRepository<Category,Long> {
-    List<OrderDetail> findByOrderId(Long orderId);
+
 }
