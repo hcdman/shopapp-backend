@@ -1,10 +1,14 @@
 package com.example.shopapp.services;
 
 import com.example.shopapp.dto.ProductDTO;
+import com.example.shopapp.dto.ProductImageDTO;
 import com.example.shopapp.exceptions.DataNotFoundException;
+import com.example.shopapp.exceptions.InvalidParamException;
 import com.example.shopapp.model.Category;
 import com.example.shopapp.model.Product;
+import com.example.shopapp.model.ProductImage;
 import com.example.shopapp.repositories.CategoryRepository;
+import com.example.shopapp.repositories.ProductImageRepository;
 import com.example.shopapp.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,8 +22,9 @@ import java.util.Optional;
 public class ProductService implements IProductService{
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ProductImageRepository productImageRepository;
     @Override
-    public Product createProduct(ProductDTO productDTO) throws DataNotFoundException {
+    public Product createProduct(ProductDTO productDTO) throws Exception {
        Category category= categoryRepository.findById(productDTO.getCategoryId())
                 .orElseThrow(()->new DataNotFoundException("Can't find category id"));
 
@@ -63,6 +68,27 @@ public class ProductService implements IProductService{
     public void deleteProduct(long id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
         optionalProduct.ifPresent(productRepository::delete); //delete entity of product
+    }
+
+    //Create product image
+    @Override
+    public ProductImage createProductImage(Long productId, ProductImageDTO productImageDTO) throws Exception {
+        //check exists product
+        Product existedProduct = getProductById(productId);
+        if(existedProduct!=null)
+        {
+            ProductImage newProductImage = ProductImage.builder()
+                    .product(existedProduct)
+                    .imageUrl(productImageDTO.getImageUrl()).build();
+            //Not allowed insert over 5 images of product.
+          int size = productImageRepository.findByProductId(productId).size();
+          if(size>=5)
+          {
+              throw new InvalidParamException("Number of images must be <= 5");
+          }
+          return productImageRepository.save(newProductImage);
+        }
+        return null;
     }
     @Override
     public boolean existsByName(String name) {
