@@ -4,9 +4,14 @@ import com.example.shopapp.dto.ProductDTO;
 import com.example.shopapp.dto.ProductImageDTO;
 import com.example.shopapp.model.Product;
 import com.example.shopapp.model.ProductImage;
+import com.example.shopapp.responses.ProductListResponse;
+import com.example.shopapp.responses.ProductResponse;
 import com.example.shopapp.services.IProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +37,15 @@ public class ProductController {
     private final IProductService productService;
     //Get all products
     @GetMapping("")
-    ResponseEntity<String> getAllProducts(@RequestParam(value = "page",defaultValue = "1") int page,@RequestParam(value="page",defaultValue = "2") int limit)
+    ResponseEntity<ProductListResponse> getAllProducts(@RequestParam(value = "page",defaultValue = "1") int page,
+                                                       @RequestParam(value="limit",defaultValue = "2") int limit)
     {
-        return  ResponseEntity.status(HttpStatus.OK).body("Get all products");
+        PageRequest pageRequest = PageRequest.of(page,limit, Sort.by("createdAt").descending());
+        Page<ProductResponse> productPage = productService.getAllProducts(pageRequest);
+        int totalPages = productPage.getTotalPages();
+        List<ProductResponse> products=productPage.getContent();
+        ProductListResponse returnData = new ProductListResponse(products,totalPages);
+        return  ResponseEntity.status(HttpStatus.OK).body(returnData);
     }
 
     //Get a product base on id
