@@ -7,8 +7,10 @@ import com.example.shopapp.model.ProductImage;
 import com.example.shopapp.responses.ProductListResponse;
 import com.example.shopapp.responses.ProductResponse;
 import com.example.shopapp.services.IProductService;
+import com.github.javafaker.Faker;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.boot.cfgxml.spi.CfgXmlAccessService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -141,5 +143,30 @@ public class ProductController {
     public ResponseEntity<String> updateProduct(@PathVariable String id)
     {
         return ResponseEntity.status(HttpStatus.OK).body("update product");
+    }
+
+    @PostMapping("generateFakeProducts")
+    public ResponseEntity<String> generateFakeProducts()
+    {
+        Faker faker = new Faker();
+        for(int i=0;i<1000;i++)
+        {
+            String productName = faker.commerce().productName();
+            if(productService.existsByName(productName)) {
+                continue;
+            }
+            ProductDTO productDTO = ProductDTO.builder()
+                    .name(productName)
+                    .price((float)faker.number().numberBetween(100000,2000000))
+                    .thumbnail("")
+                    .description(faker.lorem().sentence())
+                    .categoryId((long)faker.number().numberBetween(3,7)).build();
+            try {
+                productService.createProduct(productDTO);
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
+        }
+        return ResponseEntity.ok().body("Fake data successfully!");
     }
 }
