@@ -102,7 +102,6 @@ public class ProductController {
         String contentType = file.getContentType();
         return contentType != null && contentType.startsWith("image/");
     }
-
     private String storeFile(MultipartFile file) throws IOException
     {
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
