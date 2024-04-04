@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class OrderResponse extends BaseResponse{
     private Long id;
     @JsonProperty("user_id")
-    private Long userID;
+    private Long userId;
     @JsonProperty("fullname")
     private String fullName;
     @JsonProperty("phone_number")

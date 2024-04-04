@@ -39,7 +39,7 @@ public class OrderController {
     }
 
     //get information of order base on user id
-    @GetMapping("/users/{user_id}")
+    @GetMapping("/user/{user_id}")
     public ResponseEntity<?> getOrdersUser(@Valid @PathVariable("user_id") Long userId)
     {
         try {
@@ -50,7 +50,6 @@ public class OrderController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<?> getAnOrder(@Valid @PathVariable("id") Long id){
         try {

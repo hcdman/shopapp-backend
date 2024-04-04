@@ -65,8 +65,13 @@ public class OrderService implements IOrderService{
 
     @Override
     public OrderResponse updateOrder(Long id, OrderDTO orderDTO) throws Exception {
+        //Check exist order;
         Order existedOrder = orderRepository.findById(id).orElseThrow(
                 ()->new DataNotFoundException("Order not exist !")
+        );
+        //Check exits user
+        User existstedUser = userRepository.findById(orderDTO.getUserID()).orElseThrow(
+                ()->new DataNotFoundException("User is note exist!")
         );
         modelMapper.typeMap(OrderDTO.class, Order.class)
                 .addMappings(mapper->mapper.skip(Order::setId));
@@ -81,8 +86,7 @@ public class OrderService implements IOrderService{
         Order existedOrder = orderRepository.findById(id).orElseThrow(
                 ()->new DataNotFoundException("Order not exist !")
         );
-        orderRepository.deleteById(id);
-
+        existedOrder.setActive(false);
     }
 
     @Override
