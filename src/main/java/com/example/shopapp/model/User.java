@@ -17,7 +17,8 @@ import java.util.Date;
 public class User extends BaseEntity {
     @jakarta.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
+    @Column(name = "fullname",length = 100)
     private String fullName;
     @Column(name = "phone_number",length = 10,nullable = false)
     private String phoneNumber;
@@ -25,6 +26,7 @@ public class User extends BaseEntity {
     private String address;
     @Column(name = "password",length = 200)
     private String password;
+    @Column(name = "is_active")
     private boolean active;
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
