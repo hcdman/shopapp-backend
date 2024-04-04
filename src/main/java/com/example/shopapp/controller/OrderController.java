@@ -3,7 +3,6 @@ package com.example.shopapp.controller;
 import com.example.shopapp.dto.OrderDTO;
 import com.example.shopapp.responses.OrderResponse;
 import com.example.shopapp.services.IOrderService;
-import com.example.shopapp.services.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -39,12 +38,12 @@ public class OrderController {
         }
     }
 
-    //get information of order base on id
-    @GetMapping("/{user_id}")
-    public ResponseEntity<?> getOrders(@Valid @PathVariable("user_id") Long userId)
+    //get information of order base on user id
+    @GetMapping("/users/{user_id}")
+    public ResponseEntity<?> getOrdersUser(@Valid @PathVariable("user_id") Long userId)
     {
         try {
-            return ResponseEntity.ok("get list order base on user ID"+userId);
+            return ResponseEntity.ok().body(orderService.getAllOrders(userId));
         }
         catch (Exception e)
         {
@@ -52,18 +51,36 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getAnOrder(@Valid @PathVariable("id") Long id){
+        try {
+            return ResponseEntity.ok().body(orderService.getOrder(id));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
     //update order
     @PutMapping("/{id}")
     public ResponseEntity<?> updateOrder(@Valid @PathVariable long id,@Valid @RequestBody OrderDTO orderDTO)
     {
-        return ResponseEntity.ok("Update order successfully!");
+        try {
+            return ResponseEntity.ok().body(orderService.updateOrder(id,orderDTO));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 
     //Delete an order
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteOrder(@Valid @PathVariable Long id)
+    public ResponseEntity<String> deleteOrder(@Valid @PathVariable("id") Long id)
     {
-        return ResponseEntity.ok("Delete order successfully!" +id);
+        try {
+            orderService.deleteOrder(id);
+            return ResponseEntity.ok("Delete order successfully!" +id);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 }

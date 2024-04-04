@@ -16,8 +16,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @RequiredArgsConstructor
@@ -53,22 +55,46 @@ public class OrderService implements IOrderService{
     }
 
     @Override
-    public OrderResponse getOrder(Long id) {
-        return null;
+    public OrderResponse getOrder(Long id) throws Exception {
+        Order existedOrder = orderRepository.findById(id).orElseThrow(
+                ()->new DataNotFoundException("Order not exist !")
+        );
+
+        return modelMapper.map(existedOrder,OrderResponse.class);
     }
 
     @Override
-    public OrderResponse updateOrder(Long id, OrderDTO orderDTO) {
-        return null;
+    public OrderResponse updateOrder(Long id, OrderDTO orderDTO) throws Exception {
+        Order existedOrder = orderRepository.findById(id).orElseThrow(
+                ()->new DataNotFoundException("Order not exist !")
+        );
+        modelMapper.typeMap(OrderDTO.class, Order.class)
+                .addMappings(mapper->mapper.skip(Order::setId));
+        // update all field except id of order
+        modelMapper.map(orderDTO,existedOrder);
+        orderRepository.save(existedOrder);
+        return modelMapper.map(existedOrder,OrderResponse.class);
     }
 
     @Override
-    public void deleteOrder(Long id) {
+    public void deleteOrder(Long id) throws Exception {
+        Order existedOrder = orderRepository.findById(id).orElseThrow(
+                ()->new DataNotFoundException("Order not exist !")
+        );
+        orderRepository.deleteById(id);
 
     }
 
     @Override
     public List<OrderResponse> getAllOrders(Long userId) {
-        return null;
+        List<OrderResponse> listOrder = new ArrayList<>();
+        List<Order>  orders= orderRepository.findByUserId(userId);
+        modelMapper.typeMap(OrderDTO.class, Order.class)
+                .addMappings(mapper->mapper.skip(Order::setId));
+        for (Order order:orders)
+        {
+            listOrder.add(modelMapper.map(order,OrderResponse.class));
+        }
+        return listOrder;
     }
 }

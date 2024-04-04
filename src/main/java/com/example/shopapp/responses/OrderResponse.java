@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -21,7 +22,7 @@ public class OrderResponse extends BaseResponse{
     private String address;
     private String note;
     @JsonProperty("order_date")
-    private LocalDateTime orderDate;
+    private LocalDate orderDate;
     private String status;
     @JsonProperty("total_money")
     private Float totalMoney;
