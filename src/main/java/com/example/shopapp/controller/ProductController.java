@@ -52,9 +52,13 @@ public class ProductController {
 
     //Get a product base on id
     @GetMapping("{id}")
-    ResponseEntity<String> getProduct(@PathVariable String id)
+    ResponseEntity<?> getProduct(@PathVariable Long id)
     {
-        return ResponseEntity.status(HttpStatus.OK).body("Product have id "+ id);
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(ProductResponse.fromProduct(productService.getProductById(id)));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
     //Create a product
     @PostMapping(value = "")
@@ -134,15 +138,26 @@ public class ProductController {
 
     //Delete a product base on id
     @DeleteMapping("{id}")
-    public  ResponseEntity<String> deleteProduct(@PathVariable String id)
+    public  ResponseEntity<String> deleteProduct(@PathVariable Long id)
     {
-        return ResponseEntity.status(HttpStatus.OK).body("Delete product "+id);
+        try {
+            productService.deleteProduct(id);
+            return ResponseEntity.status(HttpStatus.OK).body("Delete product successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
     //Update a product base on id
     @PutMapping("{id}")
-    public ResponseEntity<String> updateProduct(@PathVariable String id)
+    public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO)
     {
-        return ResponseEntity.status(HttpStatus.OK).body("update product");
+
+        try {
+            Product updateProduct = productService.updateProduct(id,productDTO);
+            return ResponseEntity.ok().body(ProductResponse.fromProduct(updateProduct));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("generateFakeProducts")

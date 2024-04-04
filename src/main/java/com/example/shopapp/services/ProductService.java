@@ -40,22 +40,12 @@ public class ProductService implements IProductService{
 
     @Override
     public Product getProductById(long id){
-        return productRepository.findById(id).orElseThrow(()->new RuntimeException("Category not found"));
+        return productRepository.findById(id).orElseThrow(()->new RuntimeException("Product is not exist!"));
     }
 
     @Override
     public Page<ProductResponse> getAllProducts(PageRequest pageRequest) {
-        return productRepository.findAll(pageRequest).map(
-                product-> {ProductResponse productResponse = ProductResponse.builder()
-                        .name(product.getName())
-                        .categoryId(product.getCategory().getId())
-                        .price(product.getPrice())
-                        .thumbnail(product.getThumbnail())
-                        .description(product.getDescription()).build();
-                    productResponse.setCreatedAt(product.getCreatedAt());
-                    productResponse.setUpdatedAt(product.getUpdatedAt());
-                    return productResponse;
-                });
+        return productRepository.findAll(pageRequest).map(ProductResponse::fromProduct);
     }
 
     @Override
@@ -71,7 +61,6 @@ public class ProductService implements IProductService{
             existedProduct.setThumbnail(productDTO.getThumbnail());
             existedProduct.setCategory(category);
             return existedProduct;
-
         }
         return null;
     }
@@ -79,7 +68,7 @@ public class ProductService implements IProductService{
     @Override
     public void deleteProduct(long id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
-        optionalProduct.ifPresent(productRepository::delete); //delete entity of product
+        optionalProduct.ifPresent(productRepository::delete);
     }
 
     //Create product image
