@@ -3,6 +3,7 @@ package com.example.shopapp.services;
 import com.example.shopapp.component.JwtTokenUtil;
 import com.example.shopapp.dto.UserDTO;
 import com.example.shopapp.exceptions.DataNotFoundException;
+import com.example.shopapp.exceptions.PermissionDenyException;
 import com.example.shopapp.model.Role;
 import com.example.shopapp.model.User;
 import com.example.shopapp.repositories.RoleRepository;
@@ -27,7 +28,7 @@ public class UserService implements IUserService{
     private final JwtTokenUtil jwtTokenUtil;
     private final AuthenticationManager authenticationManager;
     @Override
-    public User createUser(UserDTO userDTO) throws DataNotFoundException {
+    public User createUser(UserDTO userDTO) throws Exception {
         String phoneNumber = userDTO.getPhoneNumber();
         if(userRepository.existsByPhoneNumber(phoneNumber))
         {
@@ -43,6 +44,11 @@ public class UserService implements IUserService{
                 .googleAccountId(userDTO.getGoogleAccountId())
                 .build();
         Role role = roleRepository.findById(userDTO.getRoleId()).orElseThrow(()->new DataNotFoundException("role not found"));
+        //Don't allow register account with role admin
+        if(role.getName().toUpperCase().equals("ADMIN"))
+        {
+            throw new PermissionDenyException("You can't not register account with role admin");
+        }
         newUser.setRole(role);
         if(userDTO.getGoogleAccountId()==0&&userDTO.getFacebookAccountId()==0)
         {
