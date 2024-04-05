@@ -1,5 +1,6 @@
 package com.example.shopapp.services;
 
+import com.example.shopapp.component.JwtTokenUtil;
 import com.example.shopapp.dto.UserDTO;
 import com.example.shopapp.exceptions.DataNotFoundException;
 import com.example.shopapp.model.Role;
@@ -8,7 +9,13 @@ import com.example.shopapp.repositories.RoleRepository;
 import com.example.shopapp.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +23,9 @@ public class UserService implements IUserService{
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final AuthenticationManager authenticationManager;
     @Override
     public User createUser(UserDTO userDTO) throws DataNotFoundException {
         String phoneNumber = userDTO.getPhoneNumber();
@@ -36,13 +46,32 @@ public class UserService implements IUserService{
         newUser.setRole(role);
         if(userDTO.getGoogleAccountId()==0&&userDTO.getFacebookAccountId()==0)
         {
-
+            String password = userDTO.getPassword();
+            String encodedPassword = passwordEncoder.encode(password);
+            newUser.setPassword(encodedPassword);
         }
         return userRepository.save(newUser);
     }
 
     @Override
-    public String login(String phoneNumber, String password) {
-        return null;
+    public String login(String phoneNumber, String password) throws Exception {
+        Optional<User> optionalUser = userRepository.findByPhoneNumber(phoneNumber);
+        if(optionalUser.isEmpty())
+        {
+            throw new DataNotFoundException("Invalid phone number / password");
+        }
+        User existedUser = optionalUser.get();
+        //check password
+        if(existedUser.getGoogleAccountId()==0&&existedUser.getFacebookAccountId()==0)
+        {
+            if(!passwordEncoder.matches(password,existedUser.getPassword()))
+            {
+                throw new BadCredentialsException("Wrong phone number or password");
+            }
+        }
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(phoneNumber,password);
+        //authenticate with Java Spring Security
+        authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+        return jwtTokenUtil.genereateToken(existedUser); //return token
     }
 }

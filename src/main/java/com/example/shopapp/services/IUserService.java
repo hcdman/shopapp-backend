@@ -6,5 +6,5 @@ import com.example.shopapp.model.User;
 
 public interface IUserService {
     public User createUser(UserDTO userDTO) throws DataNotFoundException;
-    public String login(String phoneNumber, String password);
+    public String login(String phoneNumber, String password) throws Exception;
 }
