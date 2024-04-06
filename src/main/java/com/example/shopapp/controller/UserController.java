@@ -1,30 +1,28 @@
 package com.example.shopapp.controller;
 
+import com.example.shopapp.component.LocalizationUtil;
 import com.example.shopapp.dto.UserDTO;
 import com.example.shopapp.dto.UserLoginDTO;
 import com.example.shopapp.responses.LoginResponse;
 import com.example.shopapp.services.IUserService;
+import com.example.shopapp.utils.MessageKeys;
+import com.example.shopapp.utils.WebUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.descriptor.LocalResolver;
-import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.LocaleResolver;
 
 import java.util.List;
-import java.util.Locale;
 
 @RestController
 @RequestMapping("${api.prefix}/users")
 @RequiredArgsConstructor
 public class UserController {
     private final IUserService userService;
-    private final MessageSource messageSource;
-    private final LocaleResolver localResolver;
+    private final LocalizationUtil localizationUtil;
     @PostMapping("/register")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDTO, BindingResult result)
     {
@@ -52,7 +50,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody UserLoginDTO userLoginDTO , HttpServletRequest request)
+    public ResponseEntity<?> login(@Valid @RequestBody UserLoginDTO userLoginDTO)
     {
         //check login and create token
         //response token
@@ -60,8 +58,8 @@ public class UserController {
             String token = userService.login(userLoginDTO.getPhoneNumber(),userLoginDTO.getPassword());
             LoginResponse loginResponse = new LoginResponse();
             loginResponse.setToken(token);
-            Locale locale = localResolver.resolveLocale(request);
-            loginResponse.setMessage(messageSource.getMessage("user.login.login_successfully",null,locale));
+            String message = localizationUtil.getLocalizedMessage(MessageKeys.LOGIN_SUCCESS);
+            loginResponse.setMessage(message);
             return ResponseEntity.ok().body(loginResponse);
         } catch (Exception e) {
            return ResponseEntity.badRequest().body(LoginResponse.builder()
