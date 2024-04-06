@@ -2,6 +2,7 @@ package com.example.shopapp.controller;
 
 import com.example.shopapp.dto.UserDTO;
 import com.example.shopapp.dto.UserLoginDTO;
+import com.example.shopapp.responses.LoginResponse;
 import com.example.shopapp.services.IUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -43,13 +44,15 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody UserLoginDTO userLoginDTO)
+    public ResponseEntity<?> login(@Valid @RequestBody UserLoginDTO userLoginDTO)
     {
         //check login and create token
         //response token
         try {
             String token = userService.login(userLoginDTO.getPhoneNumber(),userLoginDTO.getPassword());
-            return ResponseEntity.ok().body(token);
+            LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setToken(token);
+            return ResponseEntity.ok().body(loginResponse);
         } catch (Exception e) {
            return ResponseEntity.badRequest().body(e.getMessage());
         }
