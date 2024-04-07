@@ -21,6 +21,7 @@ import java.util.List;
 @RequestMapping("${api.prefix}/users")
 @RequiredArgsConstructor
 public class UserController {
+    //dependency injection
     private final IUserService userService;
     private final LocalizationUtil localizationUtil;
     @PostMapping("/register")
@@ -63,7 +64,7 @@ public class UserController {
             return ResponseEntity.ok().body(loginResponse);
         } catch (Exception e) {
            return ResponseEntity.badRequest().body(LoginResponse.builder()
-                   .message(e.getMessage()).build());
+                   .message(localizationUtil.getLocalizedMessage(MessageKeys.LOGIN_FAILED,e.getMessage())).build());
         }
     }
 }

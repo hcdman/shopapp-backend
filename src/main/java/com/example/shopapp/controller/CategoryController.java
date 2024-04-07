@@ -34,8 +34,7 @@ public class CategoryController {
                     .map(FieldError::getDefaultMessage).toList();
             return  ResponseEntity.badRequest().body(errorMessage);
         }
-        categoryService.createCategory(category);
-        return ResponseEntity.ok("Insert category successfully!");
+        return ResponseEntity.ok(   categoryService.createCategory(category));
     }
     @PutMapping("{id}")
     public ResponseEntity<String> updateCategory(@PathVariable Long id,@Valid @RequestBody CategoryDTO categoryDTO)
