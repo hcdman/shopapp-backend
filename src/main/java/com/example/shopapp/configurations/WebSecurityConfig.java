@@ -50,6 +50,8 @@ public class WebSecurityConfig {
                             .requestMatchers(HttpMethod.POST,String.format("%s/products/**",apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(HttpMethod.PUT,String.format("%s/products/**",apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(HttpMethod.DELETE,String.format("%s/products/**",apiPrefix)).hasRole(Role.ADMIN)
+                            //product image
+                            .requestMatchers(HttpMethod.GET,String.format("%s/products/images/*",apiPrefix)).permitAll()
                             //order request
                             .requestMatchers(HttpMethod.POST,String.format("%s/order/**",apiPrefix)).hasRole(Role.USER)
                             .requestMatchers(HttpMethod.GET,String.format("%s/order/**",apiPrefix)).hasAnyRole(Role.USER,Role.ADMIN)

@@ -11,6 +11,7 @@ import com.github.javafaker.Faker;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.boot.cfgxml.spi.CfgXmlAccessService;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -113,6 +115,27 @@ public class ProductController {
         catch (Exception e)
         {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    //get image or product
+    @GetMapping("/images/{imageName}")
+    public ResponseEntity<?> viewImage(@PathVariable String imageName)
+    {
+        try {
+            Path imagePath = Paths.get("uploads/"+imageName);
+            UrlResource resource = new UrlResource(imagePath.toUri());
+            if(resource.exists())
+            {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(resource);
+            }
+            else
+            {
+                return  ResponseEntity.notFound().build();
+            }
+        } catch (MalformedURLException e) {
+            return  ResponseEntity.notFound().build();
         }
     }
     private boolean isImage(MultipartFile file) {

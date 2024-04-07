@@ -18,6 +18,7 @@ public class UserLoginDTO {
     private String phoneNumber;
     @NotBlank(message = "Password is required")
     private String password;
+
     @Min(value = 1, message = "You must enter role's Id")
     @JsonProperty("role_id")
     private Long roleId;
