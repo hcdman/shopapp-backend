@@ -56,7 +56,7 @@ public class UserController {
         //check login and create token
         //response token
         try {
-            String token = userService.login(userLoginDTO.getPhoneNumber(),userLoginDTO.getPassword());
+            String token = userService.login(userLoginDTO.getPhoneNumber(),userLoginDTO.getPassword(), userLoginDTO.getRoleId());
             LoginResponse loginResponse = new LoginResponse();
             loginResponse.setToken(token);
             String message = localizationUtil.getLocalizedMessage(MessageKeys.LOGIN_SUCCESS);

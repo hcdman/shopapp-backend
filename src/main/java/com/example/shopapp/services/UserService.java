@@ -60,7 +60,7 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public String login(String phoneNumber, String password) throws Exception {
+    public String login(String phoneNumber, String password,Long roleId) throws Exception {
         Optional<User> optionalUser = userRepository.findByPhoneNumber(phoneNumber);
         if(optionalUser.isEmpty())
         {
@@ -74,6 +74,10 @@ public class UserService implements IUserService{
             {
                 throw new BadCredentialsException("Wrong phone number or password");
             }
+        }
+        Optional<Role> optionalRole = roleRepository.findById(roleId);
+        if(optionalRole.isEmpty() || !roleId.equals(existedUser.getRole().getId())) {
+            throw new DataNotFoundException("Consider your role !");
         }
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(phoneNumber,password);
         //authenticate with Java Spring Security

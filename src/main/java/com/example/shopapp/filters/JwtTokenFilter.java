@@ -37,6 +37,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         try {
             if (isByPassToken(request)) {
                 filterChain.doFilter(request, response); //enable bypass
+                return;
             } else {
                 final String authHeader = request.getHeader("Authorization");
                 if (authHeader == null && !authHeader.startsWith("Bearer ")) {
@@ -68,7 +69,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private boolean isByPassToken(@NonNull HttpServletRequest request)
     {
         final List<Pair<String,String>> byPassTokens = Arrays.asList(
-                Pair.of(String.format("%s/roles",apiPrefix),"GET"),
+                Pair.of(String.format("%s/roles",apiPrefix),"   GET"),
                 Pair.of(String.format("%s/products",apiPrefix),"GET"),
                 Pair.of(String.format("%s/categories",apiPrefix),"GET"),
                 Pair.of(String.format("%s/users/register",apiPrefix),"POST"),
