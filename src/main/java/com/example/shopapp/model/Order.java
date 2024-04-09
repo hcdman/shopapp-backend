@@ -1,5 +1,6 @@
 package com.example.shopapp.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Table(name = "orders")
 @Entity
@@ -49,5 +51,10 @@ public class Order {
     private String paymentMethod;
     @Column(name = "active")
     private Boolean active;
+
+    @OneToMany(mappedBy = "order",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<OrderDetail> orderDetails;
+
 
 }

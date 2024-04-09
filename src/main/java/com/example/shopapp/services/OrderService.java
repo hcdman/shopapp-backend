@@ -1,12 +1,12 @@
 package com.example.shopapp.services;
 
+import com.example.shopapp.dto.CartItemDTO;
 import com.example.shopapp.dto.OrderDTO;
 import com.example.shopapp.exceptions.DataNotFoundException;
-import com.example.shopapp.model.Category;
-import com.example.shopapp.model.Order;
-import com.example.shopapp.model.OrderStatus;
-import com.example.shopapp.model.User;
+import com.example.shopapp.model.*;
+import com.example.shopapp.repositories.OrderDetailRepository;
 import com.example.shopapp.repositories.OrderRepository;
+import com.example.shopapp.repositories.ProductRepository;
 import com.example.shopapp.repositories.UserRepository;
 import com.example.shopapp.responses.OrderResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,9 @@ import java.util.concurrent.ExecutionException;
 @RequiredArgsConstructor
 public class OrderService implements IOrderService{
     private final UserRepository userRepository;
+    private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
+    private  final OrderDetailRepository orderDetailRepository;
     private final ModelMapper modelMapper;
     @Override
     public OrderResponse createOrder(OrderDTO orderDTO) throws Exception {
@@ -48,9 +50,32 @@ public class OrderService implements IOrderService{
         {
             throw new DataNotFoundException("Date shipping must be at least today");
         }
+        order.setTotalMoney(orderDTO.getTotalMoney());
         order.setActive(true);
         order.setShippingDate(shippingDate);
         orderRepository.save(order);
+        //create list for order detail
+        List<OrderDetail> orderDetails = new ArrayList<>();
+        for(CartItemDTO cartItemDTO: orderDTO.getCartItems())
+        {
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setOrder(order);
+            //get information of product in cart items
+            Long productId = cartItemDTO.getProductId();
+            int quantity = cartItemDTO.getQuantity();
+            //find information of product
+            Product product = productRepository.findById((productId))
+                    .orElseThrow(()->new DataNotFoundException("Product not found with id : "+productId));
+
+            //set information of order detail
+            orderDetail.setProduct(product);
+            orderDetail.setNumberOfProducts(quantity);
+            orderDetail.setPrice(product.getPrice());
+
+            orderDetails.add(orderDetail);
+        }
+        //save information of order detail to database
+        orderDetailRepository.saveAll(orderDetails);
         return modelMapper.map(order,OrderResponse.class);
     }
 

@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -44,8 +45,8 @@ public class OrderDTO {
     private String trackingNumber;
     @JsonProperty("status")
     private String status;
-//    @JsonProperty("active")
-//    private Boolean active;
     @JsonProperty("shipping_date")
     private LocalDate shippingDate;
+    @JsonProperty("cart_items")
+    private List<CartItemDTO> cartItems;
 }

@@ -1,5 +1,6 @@
 package com.example.shopapp.responses;
 
+import com.example.shopapp.model.OrderDetail;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -20,6 +22,7 @@ public class OrderResponse extends BaseResponse{
     @JsonProperty("phone_number")
     private String phoneNumber;
     private String address;
+    private String email;
     private String note;
     @JsonProperty("order_date")
     private LocalDate orderDate;
@@ -36,4 +39,6 @@ public class OrderResponse extends BaseResponse{
     private String paymentMethod;
     @JsonProperty( "active")
     private Boolean active;
+    @JsonProperty("order_details")
+    private List<OrderDetail> orderDetails;
 }
