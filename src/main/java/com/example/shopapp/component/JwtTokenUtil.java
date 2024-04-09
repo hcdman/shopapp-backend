@@ -24,11 +24,10 @@ import java.util.function.Function;
 public class JwtTokenUtil {
     @Value("${jwt.expiration}")
     private int expiration;
-
     @Value("${jwt.secretKey}")
     private String secretKey;
 
-    public String genereateToken(User user)
+    public String generateToken(User user)
     {
         Map<String,Object> claims = new HashMap<>();
         claims.put("phoneNumber",user.getPhoneNumber());

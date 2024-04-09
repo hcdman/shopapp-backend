@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 public interface IProductService {
     public Product createProduct(ProductDTO productDTO) throws Exception;
     public Product getProductById(long id);
@@ -17,6 +19,7 @@ public interface IProductService {
     Product updateProduct(long id, ProductDTO productDTO) throws DataNotFoundException;
     void deleteProduct(long id);
     boolean existsByName(String name);
-
     public ProductImage createProductImage(Long productId, ProductImageDTO productImageDTO) throws Exception;
+
+    public List<Product> findProductsByIds(List<Long> productIds);
 }

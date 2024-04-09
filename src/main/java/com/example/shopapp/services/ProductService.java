@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -91,6 +92,12 @@ public class ProductService implements IProductService{
         }
         return null;
     }
+
+    @Override
+    public List<Product> findProductsByIds(List<Long> productIds) {
+        return productRepository.findProductByIds(productIds);
+    }
+
     @Override
     public boolean existsByName(String name) {
         return productRepository.existsByName(name);

@@ -31,8 +31,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("${api.prefix}/products")
@@ -213,5 +215,19 @@ public class ProductController {
             }
         }
         return ResponseEntity.ok().body("Fake data successfully!");
+    }
+
+    //get more product base on more id
+    @GetMapping("by-ids")
+    public ResponseEntity<?> getProductByIds(@RequestParam("ids") String ids)
+    {
+        try {
+            List<Long> productsIds = Arrays.stream(ids.split(","))
+                    .map(Long::parseLong).collect(Collectors.toList());
+            List<Product> products = productService.findProductsByIds(productsIds);
+            return ResponseEntity.ok(products);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
