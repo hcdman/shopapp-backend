@@ -2,7 +2,10 @@ package com.example.shopapp.services;
 
 import com.example.shopapp.dto.OrderDTO;
 import com.example.shopapp.exceptions.DataNotFoundException;
+import com.example.shopapp.model.Order;
 import com.example.shopapp.responses.OrderResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -12,4 +15,5 @@ public interface IOrderService {
     OrderResponse updateOrder(Long id,OrderDTO orderDTO) throws Exception;
     void deleteOrder(Long id) throws Exception;
     List<OrderResponse> getAllOrders(Long userId);
+    Page<Order> getOrdersByKeyword(String keyword, Pageable pageable);
 }

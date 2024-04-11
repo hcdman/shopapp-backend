@@ -12,7 +12,10 @@ import com.example.shopapp.responses.OrderResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.cglib.core.Local;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,6 +33,7 @@ public class OrderService implements IOrderService{
     private  final OrderDetailRepository orderDetailRepository;
     private final ModelMapper modelMapper;
     @Override
+    @Transactional
     public OrderResponse createOrder(OrderDTO orderDTO) throws Exception {
         //Check exist user id
         User user = userRepository.findById(orderDTO.getUserID()).orElseThrow(
@@ -42,7 +46,7 @@ public class OrderService implements IOrderService{
         Order order = new Order();
         modelMapper.map(orderDTO,order);
         order.setUser(user);
-        order.setOrderDate(new Date());
+        order.setOrderDate(LocalDate.now());
         order.setStatus(OrderStatus.PENDING);
         LocalDate shippingDate = orderDTO.getShippingDate()==null?LocalDate.now():orderDTO.getShippingDate();
         //shipping date > today
@@ -89,6 +93,7 @@ public class OrderService implements IOrderService{
     }
 
     @Override
+    @Transactional
     public OrderResponse updateOrder(Long id, OrderDTO orderDTO) throws Exception {
         //Check exist order;
         Order existedOrder = orderRepository.findById(id).orElseThrow(
@@ -107,6 +112,7 @@ public class OrderService implements IOrderService{
     }
 
     @Override
+    @Transactional
     public void deleteOrder(Long id) throws Exception {
         Order existedOrder = orderRepository.findById(id).orElseThrow(
                 ()->new DataNotFoundException("Order not exist !")
@@ -125,5 +131,10 @@ public class OrderService implements IOrderService{
             listOrder.add(modelMapper.map(order,OrderResponse.class));
         }
         return listOrder;
+    }
+
+    @Override
+    public Page<Order> getOrdersByKeyword(String keyword, Pageable pageable) {
+        return orderRepository.findByKeyword(keyword, pageable);
     }
 }
