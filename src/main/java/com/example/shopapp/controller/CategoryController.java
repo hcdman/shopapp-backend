@@ -4,7 +4,7 @@ import com.example.shopapp.component.LocalizationUtil;
 import com.example.shopapp.dto.CategoryDTO;
 import com.example.shopapp.model.Category;
 import com.example.shopapp.responses.CategoryResponse;
-import com.example.shopapp.responses.ActionCategoryResponse;
+import com.example.shopapp.responses.ActionResponse;
 import com.example.shopapp.services.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -53,11 +53,11 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ActionCategoryResponse> updateCategory(
+    public ResponseEntity<ActionResponse> updateCategory(
             @PathVariable Long id,
             @Valid @RequestBody CategoryDTO categoryDTO
     ) {
-        ActionCategoryResponse updateCategoryResponse = new ActionCategoryResponse();
+        ActionResponse updateCategoryResponse = new ActionResponse();
         categoryService.updateCategory(id, categoryDTO);
         updateCategoryResponse.setMessage("Update category successfully!");
         return ResponseEntity.ok(updateCategoryResponse);
@@ -73,7 +73,7 @@ public class CategoryController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
-        ActionCategoryResponse deleteCategoryResponse = new ActionCategoryResponse();
+        ActionResponse deleteCategoryResponse = new ActionResponse();
         deleteCategoryResponse.setMessage("Delete category successfully!");
         return ResponseEntity.ok(deleteCategoryResponse);
     }

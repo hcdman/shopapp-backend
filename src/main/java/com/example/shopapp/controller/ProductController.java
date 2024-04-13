@@ -4,8 +4,10 @@ import com.example.shopapp.dto.ProductDTO;
 import com.example.shopapp.dto.ProductImageDTO;
 import com.example.shopapp.model.Product;
 import com.example.shopapp.model.ProductImage;
+import com.example.shopapp.responses.ActionResponse;
 import com.example.shopapp.responses.ProductListResponse;
 import com.example.shopapp.responses.ProductResponse;
+import com.example.shopapp.services.IProductImageService;
 import com.example.shopapp.services.IProductService;
 import com.github.javafaker.Faker;
 import jakarta.validation.Valid;
@@ -41,6 +43,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductController {
     private final IProductService productService;
+    private final IProductImageService productImageService;
     //Get all products
     @GetMapping("")
     ResponseEntity<ProductListResponse> getAllProducts(
@@ -170,11 +173,26 @@ public class ProductController {
 
     //Delete a product base on id
     @DeleteMapping("{id}")
-    public  ResponseEntity<String> deleteProduct(@PathVariable Long id)
+    public  ResponseEntity<?> deleteProduct(@PathVariable Long id)
     {
         try {
             productService.deleteProduct(id);
-            return ResponseEntity.status(HttpStatus.OK).body("Delete product successfully");
+            ActionResponse actionResponse = new ActionResponse();
+            actionResponse.setMessage("Delete product successfully");
+            return ResponseEntity.status(HttpStatus.OK).body(actionResponse);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("product_images/{id}")
+    public  ResponseEntity<?> deleteImage(@PathVariable Long id)
+    {
+        try {
+            productImageService.deleteImage(id);
+            ActionResponse actionResponse = new ActionResponse();
+            actionResponse.setMessage("Delete product image successfully");
+            return ResponseEntity.status(HttpStatus.OK).body(actionResponse);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -183,7 +201,6 @@ public class ProductController {
     @PutMapping("{id}")
     public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO)
     {
-
         try {
             Product updateProduct = productService.updateProduct(id,productDTO);
             return ResponseEntity.ok().body(ProductResponse.fromProduct(updateProduct));

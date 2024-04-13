@@ -5,7 +5,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ActionCategoryResponse {
+public class ActionResponse {
     @JsonProperty("message")
     private String message;
 }
