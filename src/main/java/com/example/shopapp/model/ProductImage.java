@@ -19,12 +19,10 @@ public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne
     @JoinColumn(name = "product_id")
     @JsonIgnore
     private Product product;
-
     @Column(name = "image_url", length = 300)
     @JsonProperty("image_url")
     private String imageUrl;

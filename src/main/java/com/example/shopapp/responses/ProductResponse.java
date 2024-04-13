@@ -22,9 +22,8 @@ public class ProductResponse extends BaseResponse {
     private Float price;
     private String thumbnail;
     private String description;
-    @JsonProperty(namespace = "category_id")
+    @JsonProperty("category_id")
     private Long categoryId;
-
     @JsonProperty("product_images")
     private List<ProductImage> productImages = new ArrayList<>();
 

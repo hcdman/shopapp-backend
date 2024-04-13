@@ -18,7 +18,6 @@ public class Role {
     private Long Id;
     @Column(name="name",nullable = false)
     private String name;
-
     public static String ADMIN = "ADMIN";
     public static String USER = "USER";
 }

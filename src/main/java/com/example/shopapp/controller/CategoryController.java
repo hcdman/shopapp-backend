@@ -4,13 +4,12 @@ import com.example.shopapp.component.LocalizationUtil;
 import com.example.shopapp.dto.CategoryDTO;
 import com.example.shopapp.model.Category;
 import com.example.shopapp.responses.CategoryResponse;
-import com.example.shopapp.responses.UpdateCategoryResponse;
+import com.example.shopapp.responses.ActionCategoryResponse;
 import com.example.shopapp.services.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -54,19 +53,29 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UpdateCategoryResponse> updateCategory(
+    public ResponseEntity<ActionCategoryResponse> updateCategory(
             @PathVariable Long id,
             @Valid @RequestBody CategoryDTO categoryDTO
     ) {
-        UpdateCategoryResponse updateCategoryResponse = new UpdateCategoryResponse();
+        ActionCategoryResponse updateCategoryResponse = new ActionCategoryResponse();
         categoryService.updateCategory(id, categoryDTO);
         updateCategoryResponse.setMessage("Update category successfully!");
         return ResponseEntity.ok(updateCategoryResponse);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getDetailCategory(
+            @PathVariable Long id
+    ) {
+        Category existedCategory = categoryService.getCategoryById(id);
+        return ResponseEntity.ok(existedCategory);
+    }
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
+    public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
-        return ResponseEntity.ok(localizationUtils.getLocalizedMessage("Delete category successfully!"));
+        ActionCategoryResponse deleteCategoryResponse = new ActionCategoryResponse();
+        deleteCategoryResponse.setMessage("Delete category successfully!");
+        return ResponseEntity.ok(deleteCategoryResponse);
     }
 }
 
