@@ -3,6 +3,7 @@ package com.example.shopapp.configurations;
 import com.example.shopapp.filters.JwtTokenFilter;
 import com.example.shopapp.model.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebMvc
 @RequiredArgsConstructor
 public class WebSecurityConfig {
+
     private final JwtTokenFilter jwtTokenFilter;
     @Value("${api.prefix}")
     private String apiPrefix;
