@@ -7,7 +7,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 
 //get current request
 
-public class WebUtils {
+public class   WebUtils {
     public static HttpServletRequest getCurrentRequest()
     {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();

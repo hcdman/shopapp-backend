@@ -14,6 +14,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class UserDTO {
     @JsonProperty("fullname")
     private String fullName;
@@ -27,6 +28,7 @@ public class UserDTO {
     @JsonProperty("retype_password")
     private String retypePassword;
     @JsonProperty("date_of_birth")
+    private String email;
     private Date dateOfBirth;
     @JsonProperty("facebook_account_id")
     private int facebookAccountId;

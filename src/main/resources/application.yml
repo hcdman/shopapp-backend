@@ -1,6 +1,13 @@
 server:
   port: 8088
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 503745700164-1f1jcb22h6a1sv63taukkq7jn2lc1dot.apps.googleusercontent.com
+            client-secret: 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
   datasource:
     url: jdbc:mysql://localhost:3306/ShopApp?useSSL=false&serverTimeZone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver

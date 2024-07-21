@@ -7,27 +7,82 @@ import com.example.shopapp.dto.UserLoginDTO;
 import com.example.shopapp.model.User;
 import com.example.shopapp.responses.LoginResponse;
 import com.example.shopapp.responses.UserResponse;
-import com.example.shopapp.services.IUserService;
+import com.example.shopapp.services.UserService;
 import com.example.shopapp.utils.MessageKeys;
-import com.example.shopapp.utils.WebUtils;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("${api.prefix}/users")
 @RequiredArgsConstructor
 public class UserController {
-    //dependency injection
-    private final IUserService userService;
+    private final UserService userService;
     private final LocalizationUtil localizationUtil;
+    @GetMapping("/loginSuccess")
+    public ResponseEntity<?> loginSuccess(Authentication authentication) {
+
+        try {
+            if (authentication instanceof OAuth2AuthenticationToken) {
+                OAuth2AuthenticationToken oAuth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
+                OAuth2User oAuth2User = oAuth2AuthenticationToken.getPrincipal();
+                Map<String, Object> attributes = oAuth2User.getAttributes();
+                String email = (String) attributes.get("email");
+                String phoneNumber ="", passWord = "google";
+                //check exist user with email
+                Optional<User> user = userService.getUserByEmail(email);
+                if(user.isEmpty())
+                {
+                    String address = (String) attributes.get("address");
+                    String name = (String) attributes.get("name");
+                    UUID uuid = UUID.randomUUID();
+                    String randomString = uuid.toString().substring(0, 8);
+                    UserDTO userDTO = UserDTO.builder().fullName(name)
+                            .email(email)
+                            .address(address)
+                            .googleAccountId(1)
+                            .phoneNumber(randomString)
+                            .password("google")
+                            .roleId(1L)
+                            .build();
+                    userService.createUser(userDTO);
+                    phoneNumber = userDTO.getPhoneNumber();
+                }
+                else
+                {
+                    phoneNumber = user.get().getPhoneNumber();
+                }
+                String token = userService.loginSocialAccount(email,phoneNumber,passWord);
+                LoginResponse loginResponse = new LoginResponse();
+                loginResponse.setToken(token);
+                String message = localizationUtil.getLocalizedMessage(MessageKeys.LOGIN_SUCCESS);
+                loginResponse.setMessage(message);
+                return ResponseEntity.ok().body(loginResponse);
+            } else {
+                return ResponseEntity.badRequest().body(LoginResponse.builder()
+                        .message(localizationUtil.getLocalizedMessage(MessageKeys.LOGIN_FAILED)).build());
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/loginFailed")
+    public ResponseEntity<?> loginFailed() {
+        return ResponseEntity.badRequest().body(LoginResponse.builder()
+                .message(localizationUtil.getLocalizedMessage(MessageKeys.LOGIN_FAILED)).build());
+    }
     @PostMapping("/register")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDTO, BindingResult result)
     {
@@ -73,14 +128,14 @@ public class UserController {
     }
 
     @PostMapping("/details")
-    public ResponseEntity<UserResponse> getUserDetails(@RequestHeader("Authorization") String token)
+    public ResponseEntity<?> getUserDetails(@RequestHeader("Authorization") String token)
     {
         try {
             String extractedToken = token.substring(7); //"bearer "
             User user = userService.getUserDetailFromToken(extractedToken);
             return  ResponseEntity.ok().body(UserResponse.fromUser(user));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -91,6 +146,7 @@ public class UserController {
             @RequestHeader("Authorization") String authorizationHeader
     ) {
         try {
+
             String extractedToken = authorizationHeader.substring(7);
             User user = userService.getUserDetailFromToken(extractedToken);
             // Ensure that the user making the request matches the user being updated

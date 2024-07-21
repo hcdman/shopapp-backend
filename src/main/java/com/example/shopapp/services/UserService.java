@@ -32,7 +32,7 @@ public class UserService implements IUserService{
     @Override
     public User createUser(UserDTO userDTO) throws Exception {
         String phoneNumber = userDTO.getPhoneNumber();
-        if(userRepository.existsByPhoneNumber(phoneNumber))
+        if(userRepository.existsByPhoneNumber(phoneNumber)&&userDTO.getGoogleAccountId()!=1)
         {
             throw new DataIntegrityViolationException("Phone number already exists!");
         }
@@ -41,6 +41,7 @@ public class UserService implements IUserService{
                 .phoneNumber(userDTO.getPhoneNumber())
                 .password(userDTO.getPassword())
                 .address(userDTO.getAddress())
+                .email(userDTO.getEmail())
                 .dateOfBirth(userDTO.getDateOfBirth())
                 .facebookAccountId(userDTO.getFacebookAccountId())
                 .googleAccountId(userDTO.getGoogleAccountId())
@@ -52,12 +53,9 @@ public class UserService implements IUserService{
             throw new PermissionDenyException("You can't not register account with role admin");
         }
         newUser.setRole(role);
-        if(userDTO.getGoogleAccountId()==0&&userDTO.getFacebookAccountId()==0)
-        {
-            String password = userDTO.getPassword();
-            String encodedPassword = passwordEncoder.encode(password);
-            newUser.setPassword(encodedPassword);
-        }
+        String password = userDTO.getPassword();
+        String encodedPassword = passwordEncoder.encode(password);
+        newUser.setPassword(encodedPassword);
         return userRepository.save(newUser);
     }
 
@@ -89,13 +87,29 @@ public class UserService implements IUserService{
     }
 
     @Override
+    public Optional<User> getUserByEmail(String email) throws Exception {
+        return userRepository.findByEmail(email);
+    }
+
+
+    public String loginSocialAccount(String email, String phoneNumber, String password) throws Exception {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        User existedUser = optionalUser.get();
+        //check is active account
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(existedUser.getPhoneNumber(),password,existedUser.getAuthorities());
+        //authenticate with Java Spring Security
+        authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+        return jwtTokenUtil.generateToken(existedUser); //return token
+    }
+
+    @Override
     public User getUserDetailFromToken(String token) throws Exception {
         if(jwtTokenUtil.isTokenExpired(token))
         {
             throw new Exception("Token is expired");
         }
-        String phoneNumber= jwtTokenUtil.extractPhoneNumber(token);
-        Optional<User> user = userRepository.findByPhoneNumber(phoneNumber);
+        String id = jwtTokenUtil.extractIdUser(token);
+        Optional<User> user = userRepository.findById(Long.valueOf(id));
         if(user.isPresent())
         {
             return user.get();

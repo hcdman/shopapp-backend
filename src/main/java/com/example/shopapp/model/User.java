@@ -32,6 +32,8 @@ public class User extends BaseEntity implements UserDetails {
     private String address;
     @Column(name = "password",length = 200)
     private String password;
+    @Column(name = "email",length = 200)
+    private String email;
     @Column(name = "is_active")
     private boolean active;
     @Column(name = "date_of_birth")
@@ -53,8 +55,9 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return phoneNumber; //use that field to login
+        return null;
     }
+
 
     @Override
     public boolean isAccountNonExpired() {

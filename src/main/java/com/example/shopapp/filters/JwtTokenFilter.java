@@ -6,15 +6,12 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -53,6 +50,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                 null,
                                 userDetails.getAuthorities()
                         );
+                        //set user
                         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     }
@@ -62,7 +60,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
         catch (Exception e)
         {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"Unauthorized");
+
         }
     }
     private boolean isByPassToken(@NonNull HttpServletRequest request)
@@ -72,14 +70,15 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/products",apiPrefix),"GET"),
                 Pair.of(String.format("%s/categories",apiPrefix),"GET"),
                 Pair.of(String.format("%s/users/register",apiPrefix),"POST"),
-                Pair.of(String.format("%s/users/login",apiPrefix),"POST")
+                Pair.of(String.format("%s/users/details",apiPrefix),"POST"),
+                Pair.of(String.format("%s/users/login",apiPrefix),"POST"),
+                Pair.of(String.format("%s/users/loginSuccess", apiPrefix),"GET"),
+                Pair.of(String.format("%s/users/loginFailed", apiPrefix),"GET")
         );
         String requestPath = request.getServletPath();
         String requestMethod = request.getMethod();
-
         if (requestPath.equals(String.format("%s/orders", apiPrefix))
                 && requestMethod.equals("GET")) {
-            // Allow access to %s/orders
             return true;
         }
         for(Pair<String,String> byPassToken:byPassTokens)

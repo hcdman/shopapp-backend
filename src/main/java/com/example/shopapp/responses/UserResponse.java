@@ -33,11 +33,6 @@ public class UserResponse {
     @JsonProperty("date_of_birth")
     private Date dateOfBirth;
 
-    @JsonProperty("facebook_account_id")
-    private int facebookAccountId;
-
-    @JsonProperty("google_account_id")
-    private int googleAccountId;
 
     @JsonProperty("role")
     private Role role;
@@ -49,8 +44,6 @@ public class UserResponse {
                 .address(user.getAddress())
                 .active(user.isActive())
                 .dateOfBirth(user.getDateOfBirth())
-                .facebookAccountId(user.getFacebookAccountId())
-                .googleAccountId(user.getGoogleAccountId())
                 .role(user.getRole())
                 .build();
     }

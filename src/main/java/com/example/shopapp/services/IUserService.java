@@ -6,10 +6,12 @@ import com.example.shopapp.exceptions.DataNotFoundException;
 import com.example.shopapp.model.User;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 public interface IUserService {
     public User createUser(UserDTO userDTO) throws Exception;
     public String login(String phoneNumber, String password,Long roleId) throws Exception;
-
+    public Optional<User> getUserByEmail(String email) throws Exception;
 
 
     public User getUserDetailFromToken(String token) throws Exception;

@@ -1,6 +1,7 @@
 package com.example.shopapp.component;
 
 import com.example.shopapp.exceptions.InvalidParamException;
+import com.example.shopapp.model.SocialAccount;
 import com.example.shopapp.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -22,6 +23,7 @@ import java.util.function.Function;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenUtil {
+
     @Value("${jwt.expiration}")
     private int expiration;
     @Value("${jwt.secretKey}")
@@ -30,13 +32,12 @@ public class JwtTokenUtil {
     public String generateToken(User user)
     {
         Map<String,Object> claims = new HashMap<>();
-        //put phone number and user id to token
         claims.put("phoneNumber",user.getPhoneNumber());
-        claims.put("userId",user.getId());
+        claims.put("userId",user.getId()+"");
         try {
             String token = Jwts.builder()
                     .setClaims(claims)
-                    .setSubject(user.getPhoneNumber())
+                    .setSubject(String.valueOf(user.getId()))
                     .setExpiration(new Date(System.currentTimeMillis()+expiration*1000L))
                     .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                     .compact();
@@ -72,9 +73,15 @@ public class JwtTokenUtil {
         return expirationDate.before(new Date());
     }
 
+    public String extractIdUser(String token)
+    {
+        Claims claims = extractAllClaims(token);
+        return claims.get("userId").toString();
+    }
     public String extractPhoneNumber(String token)
     {
-        return extractClaim(token,Claims::getSubject);
+        Claims claims = extractAllClaims(token);
+        return  claims.get("phoneNumber",String.class);
     }
     public boolean validateToken(String token, UserDetails userDetails)
     {
