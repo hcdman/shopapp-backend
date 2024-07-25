@@ -118,7 +118,10 @@ public class UserService implements IUserService{
             throw new Exception("User not found");
         }
     }
-
+    public Optional<User> loadUserByUserName(String username)
+    {
+        return userRepository.findByPhoneNumber(username);
+    }
     @Transactional
     @Override
     public User updateUser(Long userId, UpdateUserDTO updatedUserDTO) throws Exception {

@@ -17,7 +17,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -31,20 +30,18 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
-                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(request -> {
                     request
                             .requestMatchers(
                                     String.format("%s/users/register", apiPrefix),
+                                    String.format("%s/users/foo", apiPrefix),
                                     String.format("%s/users/login", apiPrefix),
                                     String.format("%s/users/signinGoogle", apiPrefix),
-                                    String.format("%s/users/loginSuccess", apiPrefix),
-                                    String.format("%s/users/loginFailed", apiPrefix),
-                                    String.format("%s/users/details", apiPrefix),
-                                    "/oauth2/**", // Allow all OAuth2-related endpoints
-                                    "/login/oauth2/**" // Allow OAuth2 login and callback endpoints
+                                    String.format("%s/auth/outbound/authentication", apiPrefix),
+                                    String.format("%s/users/details", apiPrefix)
                             ).permitAll()
                             .requestMatchers(HttpMethod.POST, String.format("%s/users/details", apiPrefix)).hasRole(Role.USER)
                             //category request
@@ -72,11 +69,7 @@ public class WebSecurityConfig {
                             .requestMatchers(HttpMethod.PUT, String.format("%s/order_details/**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(HttpMethod.DELETE, String.format("%s/order_details/**", apiPrefix)).hasRole(Role.ADMIN)
                             .anyRequest().authenticated();
-                })
-                .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl(String.format("/%s/users/loginSuccess", apiPrefix))
-                        .failureUrl(String.format("/%s/users/loginFailed", apiPrefix))
-                );
+                });
         return http.build();
     }
     @Bean

@@ -32,6 +32,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull  HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         try {
+            System.out.println("Request method: " + request.getMethod());
+            System.out.println("Request URI: "+ request.getRequestURI());
             if (isByPassToken(request)) {
                 filterChain.doFilter(request, response); //enable bypass
             } else {
@@ -71,9 +73,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/categories",apiPrefix),"GET"),
                 Pair.of(String.format("%s/users/register",apiPrefix),"POST"),
                 Pair.of(String.format("%s/users/details",apiPrefix),"POST"),
+                Pair.of(String.format("%s/users/foo",apiPrefix),"GET"),
                 Pair.of(String.format("%s/users/login",apiPrefix),"POST"),
                 Pair.of(String.format("%s/users/loginSuccess", apiPrefix),"GET"),
-                Pair.of(String.format("%s/users/loginFailed", apiPrefix),"GET")
+                Pair.of(String.format("%s/auth/outbound/authentication", apiPrefix),"POST"),
+                Pair.of(String.format("%s/auth/out", apiPrefix),"GET")
         );
         String requestPath = request.getServletPath();
         String requestMethod = request.getMethod();

@@ -1,26 +1,19 @@
 server:
   port: 8088
 spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}
   datasource:
     url: jdbc:mysql://localhost:3306/ShopApp?useSSL=false&serverTimeZone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    username: root
+    password:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: none
+       ddl-auto: none
     properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
-        format_sql: true
+       hibernate:
+       dialect: org.hibernate.dialect.MySQL8Dialect
+       format_sql: true
   servlet:
     multipart:
       max-file-size: 10MB
@@ -29,8 +22,13 @@ spring:
     basename: i18n/messages
     encoding: UTF-8
     default-locale: en
+outbound:
+  identity:
+    client-id: "<CLIENT_ID>"
+    client-secret: "<CLIENT_SECRET>"
+    redirect-uri: "http://localhost:4200/authenticate"
 api:
   prefix: api/v1
 jwt:
-  expiration: 289200 # 30 days = 30*24*60*60
-  secretKey: ${JWT_SECRET_KEY}
+  expiration: 289200 #30 days = 30*24*60*60
+  secretKey: YKX7J5M9HrMFLsCgU6NpGtz8oq51nQGvkLu6F9RWOW4=
