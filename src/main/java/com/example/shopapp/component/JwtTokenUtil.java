@@ -1,7 +1,5 @@
 package com.example.shopapp.component;
 
-import com.example.shopapp.exceptions.InvalidParamException;
-import com.example.shopapp.model.SocialAccount;
 import com.example.shopapp.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -32,7 +30,7 @@ public class JwtTokenUtil {
     public String generateToken(User user)
     {
         Map<String,Object> claims = new HashMap<>();
-        claims.put("phoneNumber",user.getPhoneNumber());
+        claims.put("userIdentifier",user.getUserIdentifier());
         claims.put("userId",user.getId()+"");
         try {
             String token = Jwts.builder()
@@ -78,14 +76,14 @@ public class JwtTokenUtil {
         Claims claims = extractAllClaims(token);
         return claims.get("userId").toString();
     }
-    public String extractPhoneNumber(String token)
+    public String extractUserIdentifier(String token)
     {
         Claims claims = extractAllClaims(token);
-        return  claims.get("phoneNumber",String.class);
+        return  claims.get("userIdentifier",String.class);
     }
     public boolean validateToken(String token, UserDetails userDetails)
     {
-        String phoneNumber = extractPhoneNumber(token);
-        return (phoneNumber.equals(userDetails.getUsername())&&!isTokenExpired(token));
+        String userIdentifier = extractUserIdentifier(token);
+        return (userIdentifier.equals(userDetails.getUsername())&&!isTokenExpired(token));
     }
 }

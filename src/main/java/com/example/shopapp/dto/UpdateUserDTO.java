@@ -16,15 +16,12 @@ public class UpdateUserDTO {
     @JsonProperty("fullname")
     private String fullName;
 
-    @JsonProperty("phone_number")
-    private String phoneNumber;
+    @JsonProperty("user_identifier")
+    private String userIdentifier;
 
     private String address;
 
     private String password;
-
-    @JsonProperty("date_of_birth")
-    private Date dateOfBirth;
 
     @JsonProperty("facebook_account_id")
     private int facebookAccountId;

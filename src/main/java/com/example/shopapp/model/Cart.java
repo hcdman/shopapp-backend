@@ -7,29 +7,23 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Table(name = "order_details")
+@Table(name="cart")
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderDetail {
+public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private  Long id;
     @ManyToOne
-    @JoinColumn(name="order_id")
+    @JoinColumn(name = "user_id")
     @JsonBackReference
-    private  Order order;
+    private User user;
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
-    @Column(name = "price",nullable = false)
-    private Float price;
-    @Column(name = "number_of_products",nullable = false)
-    private Integer numberOfProducts;
-    @Column(name = "total_money",nullable = false)
-    private Float totalMoney;
-    @Column(name = "color")
-    private String color;
+    @Column(name = "quantity",nullable = false)
+    private Integer quantity;
 }

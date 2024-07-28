@@ -31,18 +31,16 @@ public class UserService implements IUserService{
     private final AuthenticationManager authenticationManager;
     @Override
     public User createUser(UserDTO userDTO) throws Exception {
-        String phoneNumber = userDTO.getPhoneNumber();
-        if(userRepository.existsByPhoneNumber(phoneNumber)&&userDTO.getGoogleAccountId()!=1)
+        String userIdentifier = userDTO.getUserIdentifier();
+        if(userRepository.existsByUserIdentifier(userIdentifier)&&userDTO.getGoogleAccountId()!=1)
         {
             throw new DataIntegrityViolationException("Phone number already exists!");
         }
         User newUser = User.builder()
                 .fullName(userDTO.getFullName())
-                .phoneNumber(userDTO.getPhoneNumber())
+                .userIdentifier(userDTO.getUserIdentifier())
                 .password(userDTO.getPassword())
                 .address(userDTO.getAddress())
-                .email(userDTO.getEmail())
-                .dateOfBirth(userDTO.getDateOfBirth())
                 .facebookAccountId(userDTO.getFacebookAccountId())
                 .googleAccountId(userDTO.getGoogleAccountId())
                 .build();
@@ -60,8 +58,8 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public String login(String phoneNumber, String password,Long roleId) throws Exception {
-        Optional<User> optionalUser = userRepository.findByPhoneNumber(phoneNumber);
+    public String login(String userIdentifier, String password,Long roleId) throws Exception {
+        Optional<User> optionalUser = userRepository.findByUserIdentifier(userIdentifier);
         if(optionalUser.isEmpty())
         {
             throw new DataNotFoundException("Invalid phone number / password");
@@ -80,28 +78,16 @@ public class UserService implements IUserService{
             throw new DataNotFoundException("Consider your role !");
         }
         //check is active account
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(phoneNumber,password,existedUser.getAuthorities());
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userIdentifier,password,existedUser.getAuthorities());
         //authenticate with Java Spring Security
         authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         return jwtTokenUtil.generateToken(existedUser); //return token
     }
 
     @Override
-    public Optional<User> getUserByEmail(String email) throws Exception {
-        return userRepository.findByEmail(email);
+    public Optional<User> getUserByUserIdentifier(String userIdentifier) throws Exception {
+        return userRepository.findByUserIdentifier(userIdentifier);
     }
-
-
-    public String loginSocialAccount(String email, String phoneNumber, String password) throws Exception {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        User existedUser = optionalUser.get();
-        //check is active account
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(existedUser.getPhoneNumber(),password,existedUser.getAuthorities());
-        //authenticate with Java Spring Security
-        authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        return jwtTokenUtil.generateToken(existedUser); //return token
-    }
-
     @Override
     public User getUserDetailFromToken(String token) throws Exception {
         if(jwtTokenUtil.isTokenExpired(token))
@@ -118,10 +104,6 @@ public class UserService implements IUserService{
             throw new Exception("User not found");
         }
     }
-    public Optional<User> loadUserByUserName(String username)
-    {
-        return userRepository.findByPhoneNumber(username);
-    }
     @Transactional
     @Override
     public User updateUser(Long userId, UpdateUserDTO updatedUserDTO) throws Exception {
@@ -130,24 +112,21 @@ public class UserService implements IUserService{
                 .orElseThrow(() -> new DataNotFoundException("User not found"));
 
         // Check if the phone number is being changed and if it already exists for another user
-        String newPhoneNumber = updatedUserDTO.getPhoneNumber();
-        if (!existingUser.getPhoneNumber().equals(newPhoneNumber) &&
-                userRepository.existsByPhoneNumber(newPhoneNumber)) {
-            throw new DataIntegrityViolationException("Phone number already exists");
+        String newUserIdentifier = updatedUserDTO.getUserIdentifier();
+        if (!existingUser.getUserIdentifier().equals(newUserIdentifier) &&
+                userRepository.existsByUserIdentifier(newUserIdentifier)) {
+            throw new DataIntegrityViolationException("User identity already exists");
         }
 
         // Update user information based on the DTO
         if (updatedUserDTO.getFullName() != null) {
             existingUser.setFullName(updatedUserDTO.getFullName());
         }
-        if (newPhoneNumber != null) {
-            existingUser.setPhoneNumber(newPhoneNumber);
+        if (newUserIdentifier != null) {
+            existingUser.setUserIdentifier(newUserIdentifier);
         }
         if (updatedUserDTO.getAddress() != null) {
             existingUser.setAddress(updatedUserDTO.getAddress());
-        }
-        if (updatedUserDTO.getDateOfBirth() != null) {
-            existingUser.setDateOfBirth(updatedUserDTO.getDateOfBirth());
         }
         if (updatedUserDTO.getFacebookAccountId() > 0) {
             existingUser.setFacebookAccountId(updatedUserDTO.getFacebookAccountId());
@@ -155,7 +134,6 @@ public class UserService implements IUserService{
         if (updatedUserDTO.getGoogleAccountId() > 0) {
             existingUser.setGoogleAccountId(updatedUserDTO.getGoogleAccountId());
         }
-
         // Update the password if it is provided in the DTO
         if (updatedUserDTO.getPassword() != null
                 && !updatedUserDTO.getPassword().isEmpty()) {

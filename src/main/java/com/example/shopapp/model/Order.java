@@ -51,7 +51,6 @@ public class Order {
     private String paymentMethod;
     @Column(name = "active")
     private Boolean active;
-
     @OneToMany(mappedBy = "order",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<OrderDetail> orderDetails;

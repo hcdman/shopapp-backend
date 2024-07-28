@@ -1,5 +1,6 @@
 package com.example.shopapp.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -26,18 +26,14 @@ public class User extends BaseEntity implements UserDetails {
     private Long id;
     @Column(name = "fullname",length = 100)
     private String fullName;
-    @Column(name = "phone_number",length = 100,nullable = false)
-    private String phoneNumber;
+    @Column(name = "user_identifier",length = 100,nullable = false)
+    private String userIdentifier;
     @Column(name = "address",length = 200)
     private String address;
     @Column(name = "password",length = 200)
     private String password;
-    @Column(name = "email",length = 200)
-    private String email;
     @Column(name = "is_active")
     private boolean active;
-    @Column(name = "date_of_birth")
-    private Date dateOfBirth;
     @Column(name = "facebook_account_id")
     private int facebookAccountId;
     @Column(name = "google_account_id")
@@ -45,7 +41,9 @@ public class User extends BaseEntity implements UserDetails {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
-
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Cart> carts;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
@@ -55,7 +53,7 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return null;
+        return this.userIdentifier;
     }
 
 

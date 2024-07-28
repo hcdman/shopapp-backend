@@ -21,7 +21,7 @@ public class SecurityConfig {
     public UserDetailsService userDetailService() {
         return phoneNumber ->
         {
-            User existedUser = userRepository.findByPhoneNumber(phoneNumber)
+            User existedUser = userRepository.findByUserIdentifier(phoneNumber)
                     .orElseThrow(() -> new UsernameNotFoundException("Cannot find user with phone number = " + phoneNumber));
             return existedUser;
         };

@@ -42,11 +42,11 @@ public class AuthenticationService {
                         .grantType(GRANT_TYPE)
                 .build());
         OutboundUserResponse userResponse = outboundUserClient.getUserInfo("json",response.getAccessToken());
-        Optional<User> user = userService.loadUserByUserName(userResponse.getEmail());
+        Optional<User> user = userService.getUserByUserIdentifier(userResponse.getEmail());
         if(!user.isPresent())
         {
             userService.createUser(UserDTO.builder()
-                            .phoneNumber(userResponse.getEmail())
+                            .userIdentifier(userResponse.getEmail())
                             .fullName(userResponse.getName())
                             .password("123456")
                             .googleAccountId(1)

@@ -36,12 +36,9 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(request -> {
                     request
                             .requestMatchers(
-                                    String.format("%s/users/register", apiPrefix),
-                                    String.format("%s/users/foo", apiPrefix),
-                                    String.format("%s/users/login", apiPrefix),
-                                    String.format("%s/users/signinGoogle", apiPrefix),
-                                    String.format("%s/auth/outbound/authentication", apiPrefix),
-                                    String.format("%s/users/details", apiPrefix)
+                                    String.format("%s/auth/register", apiPrefix),
+                                    String.format("%s/auth/login", apiPrefix),
+                                    String.format("%s/auth/outbound/authentication", apiPrefix)
                             ).permitAll()
                             .requestMatchers(HttpMethod.POST, String.format("%s/users/details", apiPrefix)).hasRole(Role.USER)
                             //category request
@@ -52,7 +49,7 @@ public class WebSecurityConfig {
                             //role
                             .requestMatchers(HttpMethod.GET, String.format("%s/roles", apiPrefix)).permitAll()
                             //product request
-                            .requestMatchers(HttpMethod.GET, String.format("%s/products**", apiPrefix)).permitAll()
+                            .requestMatchers(HttpMethod.GET, String.format("%s/products/**", apiPrefix)).permitAll()
                             .requestMatchers(HttpMethod.POST, String.format("%s/products/**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(HttpMethod.PUT, String.format("%s/products/**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(HttpMethod.DELETE, String.format("%s/products/**", apiPrefix)).hasRole(Role.ADMIN)
@@ -68,6 +65,11 @@ public class WebSecurityConfig {
                             .requestMatchers(HttpMethod.GET, String.format("%s/order_details/**", apiPrefix)).hasAnyRole(Role.USER, Role.ADMIN)
                             .requestMatchers(HttpMethod.PUT, String.format("%s/order_details/**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(HttpMethod.DELETE, String.format("%s/order_details/**", apiPrefix)).hasRole(Role.ADMIN)
+                            //cart
+                            .requestMatchers(HttpMethod.POST, String.format("%s/carts", apiPrefix)).hasRole(Role.USER)
+                            .requestMatchers(HttpMethod.GET, String.format("%s/carts/**", apiPrefix)).hasRole(Role.USER)
+                            .requestMatchers(HttpMethod.DELETE, String.format("%s/carts", apiPrefix)).hasRole(Role.USER)
+
                             .anyRequest().authenticated();
                 });
         return http.build();

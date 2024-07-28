@@ -11,8 +11,7 @@ import java.util.Optional;
 public interface IUserService {
     public User createUser(UserDTO userDTO) throws Exception;
     public String login(String phoneNumber, String password,Long roleId) throws Exception;
-    public Optional<User> getUserByEmail(String email) throws Exception;
-
+    public Optional<User> getUserByUserIdentifier(String userIdentifier) throws Exception;
 
     public User getUserDetailFromToken(String token) throws Exception;
     User updateUser(Long userId, UpdateUserDTO updatedUserDTO) throws Exception;

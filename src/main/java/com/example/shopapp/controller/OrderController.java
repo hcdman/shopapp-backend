@@ -72,7 +72,6 @@ public class OrderController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-
     }
 
     //Delete an order

@@ -32,8 +32,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull  HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         try {
-            System.out.println("Request method: " + request.getMethod());
-            System.out.println("Request URI: "+ request.getRequestURI());
             if (isByPassToken(request)) {
                 filterChain.doFilter(request, response); //enable bypass
             } else {
@@ -43,9 +41,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                     return;
                 }
                 final String token = authHeader.substring(7); //get token
-                final String phoneNumber = jwtTokenUtil.extractPhoneNumber(token);
-                if (phoneNumber != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    User userDetails = (User) userDetailsService.loadUserByUsername(phoneNumber);
+                final String userIdentifier = jwtTokenUtil.extractUserIdentifier(token);
+                if (userIdentifier != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    User userDetails = (User) userDetailsService.loadUserByUsername(userIdentifier);
                     if (jwtTokenUtil.validateToken(token, userDetails)) {
                         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                                 userDetails,
@@ -71,13 +69,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/roles",apiPrefix),"GET"),
                 Pair.of(String.format("%s/products",apiPrefix),"GET"),
                 Pair.of(String.format("%s/categories",apiPrefix),"GET"),
-                Pair.of(String.format("%s/users/register",apiPrefix),"POST"),
-                Pair.of(String.format("%s/users/details",apiPrefix),"POST"),
-                Pair.of(String.format("%s/users/foo",apiPrefix),"GET"),
-                Pair.of(String.format("%s/users/login",apiPrefix),"POST"),
-                Pair.of(String.format("%s/users/loginSuccess", apiPrefix),"GET"),
-                Pair.of(String.format("%s/auth/outbound/authentication", apiPrefix),"POST"),
-                Pair.of(String.format("%s/auth/out", apiPrefix),"GET")
+                Pair.of(String.format("%s/auth/register",apiPrefix),"POST"),
+                Pair.of(String.format("%s/auth/login",apiPrefix),"POST"),
+                Pair.of(String.format("%s/auth/outbound/authentication", apiPrefix),"POST")
         );
         String requestPath = request.getServletPath();
         String requestMethod = request.getMethod();

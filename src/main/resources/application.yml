@@ -24,8 +24,8 @@ spring:
     default-locale: en
 outbound:
   identity:
-    client-id: "<CLIENT_ID>"
-    client-secret: "<CLIENT_SECRET>"
+    client-id: "503745700164-1f1jcb22h6a1sv63taukkq7jn2lc1dot.apps.googleusercontent.com"
+    client-secret: "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"
     redirect-uri: "http://localhost:4200/authenticate"
 api:
   prefix: api/v1
