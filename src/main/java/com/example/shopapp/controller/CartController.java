@@ -2,8 +2,10 @@ package com.example.shopapp.controller;
 
 import com.example.shopapp.dto.CartItemDTO;
 import com.example.shopapp.model.Cart;
+import com.example.shopapp.responses.ActionResponse;
 import com.example.shopapp.services.ICartService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,12 +36,14 @@ public class CartController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @DeleteMapping("")
-    ResponseEntity<?> deleteProductInCart(@RequestBody CartItemDTO cartItemDTO)
+    @DeleteMapping("{userId}/{productId}")
+    ResponseEntity<?> deleteProductInCart(@PathVariable("userId") Long userId, @PathVariable("productId") Long productId)
     {
         try {
-           cartService.deleteProductInCart(cartItemDTO);
-            return ResponseEntity.ok("Delete product in cart successfully!");
+            cartService.deleteProductInCart(userId,productId);
+            ActionResponse actionResponse = new ActionResponse();
+            actionResponse.setMessage("Delete product in cart successfully");
+            return ResponseEntity.status(HttpStatus.OK).body(actionResponse);
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }

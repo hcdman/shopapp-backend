@@ -8,5 +8,5 @@ import java.util.List;
 public interface ICartService {
     void addProduct(CartItemDTO cartItemDTO) throws Exception;
     List<Cart> getCartByUserId(Long userId) throws  Exception;
-    void deleteProductInCart(CartItemDTO cartItemDTO) throws Exception;
+    void deleteProductInCart(Long userId, Long productId) throws Exception;
 }

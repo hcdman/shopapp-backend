@@ -51,8 +51,8 @@ public class CartService implements ICartService{
     }
 
     @Override
-    public void deleteProductInCart(CartItemDTO cartItemDTO) throws Exception {
-        Optional<Cart> existedCart = cartRepository.findByUserIdAndProductId(cartItemDTO.getUserId(),cartItemDTO.getProductId());
+    public void deleteProductInCart(Long userId, Long productId) throws Exception {
+        Optional<Cart> existedCart = cartRepository.findByUserIdAndProductId(userId,productId);
         cartRepository.delete(existedCart.get());
     }
 }
