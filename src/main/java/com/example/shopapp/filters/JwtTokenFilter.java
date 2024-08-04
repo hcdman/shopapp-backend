@@ -1,6 +1,7 @@
 package com.example.shopapp.filters;
 
 import com.example.shopapp.component.JwtTokenUtil;
+import com.example.shopapp.model.Role;
 import com.example.shopapp.model.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,6 +11,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -71,7 +73,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/categories",apiPrefix),"GET"),
                 Pair.of(String.format("%s/auth/register",apiPrefix),"POST"),
                 Pair.of(String.format("%s/auth/login",apiPrefix),"POST"),
-                Pair.of(String.format("%s/auth/outbound/authentication", apiPrefix),"POST")
+                Pair.of(String.format("%s/auth/outbound/authentication", apiPrefix),"POST"),
+                Pair.of(String.format("%s/vnpay/vnpay-payment", apiPrefix),"GET")
         );
         String requestPath = request.getServletPath();
         String requestMethod = request.getMethod();

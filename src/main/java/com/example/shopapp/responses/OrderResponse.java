@@ -32,7 +32,7 @@ public class OrderResponse extends BaseResponse{
     private LocalDate orderDate;
     private String status;
     @JsonProperty("total_money")
-    private Float totalMoney;
+    private Long totalMoney;
     @JsonProperty("shipping_method")
     private String shippingMethod;
     @JsonProperty("shipping_date")

@@ -38,7 +38,8 @@ public class WebSecurityConfig {
                             .requestMatchers(
                                     String.format("%s/auth/register", apiPrefix),
                                     String.format("%s/auth/login", apiPrefix),
-                                    String.format("%s/auth/outbound/authentication", apiPrefix)
+                                    String.format("%s/auth/outbound/authentication", apiPrefix),
+                                    String.format("%s/vnpay/vnpay-payment",apiPrefix)
                             ).permitAll()
                             .requestMatchers(HttpMethod.POST, String.format("%s/users/details", apiPrefix)).hasRole(Role.USER)
                             //category request
@@ -69,7 +70,8 @@ public class WebSecurityConfig {
                             .requestMatchers(HttpMethod.POST, String.format("%s/carts", apiPrefix)).hasRole(Role.USER)
                             .requestMatchers(HttpMethod.GET, String.format("%s/carts/**", apiPrefix)).hasRole(Role.USER)
                             .requestMatchers(HttpMethod.DELETE, String.format("%s/carts/**", apiPrefix)).hasRole(Role.USER)
-
+                            //vn pay
+                            .requestMatchers(HttpMethod.POST, String.format("%s/vnpay/**", apiPrefix)).hasRole(Role.USER)
                             .anyRequest().authenticated();
                 });
         return http.build();

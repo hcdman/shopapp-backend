@@ -21,7 +21,9 @@ public class CartController {
     {
         try {
             cartService.addProduct(cartItemDTO);
-            return ResponseEntity.ok("Add product to cart successfully!");
+            ActionResponse actionResponse = new ActionResponse();
+            actionResponse.setMessage("Add product to cart successfully!");
+            return ResponseEntity.ok().body(actionResponse);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
