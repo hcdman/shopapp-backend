@@ -29,7 +29,6 @@ public class ProductService implements IProductService{
     public Product createProduct(ProductDTO productDTO) throws Exception {
        Category category= categoryRepository.findById(productDTO.getCategoryId())
                 .orElseThrow(()->new DataNotFoundException("Can't find category id"));
-
         Product newProduct = Product.builder()
                 .name(productDTO.getName())
                 .price(productDTO.getPrice())
@@ -59,7 +58,6 @@ public class ProductService implements IProductService{
             existedProduct.setName(productDTO.getName());
             existedProduct.setPrice(productDTO.getPrice());
             existedProduct.setDescription(productDTO.getDescription());
-            existedProduct.setThumbnail(productDTO.getThumbnail());
             existedProduct.setCategory(category);
             productRepository.save(existedProduct);
             return existedProduct;
@@ -73,7 +71,6 @@ public class ProductService implements IProductService{
         optionalProduct.ifPresent(productRepository::delete);
     }
 
-    //Create product image
     @Override
     public ProductImage createProductImage(Long productId, ProductImageDTO productImageDTO) throws Exception {
         //check exists product

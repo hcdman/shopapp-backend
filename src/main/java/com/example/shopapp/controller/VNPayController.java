@@ -1,8 +1,10 @@
 package com.example.shopapp.controller;
 
 import com.example.shopapp.dto.OrderDTO;
+import com.example.shopapp.model.Order;
 import com.example.shopapp.responses.ActionResponse;
 import com.example.shopapp.responses.OrderResponse;
+import com.example.shopapp.services.ICartService;
 import com.example.shopapp.services.IOrderService;
 import com.example.shopapp.services.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +22,7 @@ import java.io.IOException;
 public class VNPayController {
     private final VNPayService vnPayService;
     private final IOrderService orderService;
+    private final ICartService cartService;
     @PostMapping("/submitOrder")
     public ResponseEntity<?> submitOrder(@RequestBody OrderDTO orderDTO,
                                       HttpServletRequest request, HttpServletResponse response){
@@ -37,27 +40,30 @@ public class VNPayController {
         }
     }
     @GetMapping("/vnpay-payment")
-    public String GetMapping(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void GetMapping(HttpServletRequest request, HttpServletResponse response) throws Exception {
         //parameter have user id, if payment status is success then insert new order to
         int paymentStatus =vnPayService.orderReturn(request);
-
+        String orderInfo = request.getParameter("vnp_OrderInfo");
         if(paymentStatus==1)
         {
             //delete product in cart
+            OrderResponse order = orderService.getOrder(Long.valueOf(orderInfo));
+            Long userId = order.getUserId();
+            cartService.deleteProductOfUser(userId);
             response.sendRedirect("http://localhost:4200");
         }
         else
         {
-            //delete order in database
+            orderService.deleteOrder(Long.valueOf(orderInfo));
+            response.sendRedirect("http://localhost:4200");
         }
-        String orderInfo = request.getParameter("vnp_OrderInfo");
-        String paymentTime = request.getParameter("vnp_PayDate");
-        String transactionId = request.getParameter("vnp_TransactionNo");
-        String totalPrice = request.getParameter("vnp_Amount");
-//        model.addAttribute("orderId", orderInfo);
-//        model.addAttribute("totalPrice", totalPrice);
-//        model.addAttribute("paymentTime", paymentTime);
-//        model.addAttribute("transactionId", transactionId);
-        return paymentStatus == 1 ? "ordersuccess" : "orderfail";
+//        String paymentTime = request.getParameter("vnp_PayDate");
+//        String transactionId = request.getParameter("vnp_TransactionNo");
+//        String totalPrice = request.getParameter("vnp_Amount");
+////        model.addAttribute("orderId", orderInfo);
+////        model.addAttribute("totalPrice", totalPrice);
+////        model.addAttribute("paymentTime", paymentTime);
+////        model.addAttribute("transactionId", transactionId);
+//        return paymentStatus == 1 ? "ordersuccess" : "orderfail";
     }
 }

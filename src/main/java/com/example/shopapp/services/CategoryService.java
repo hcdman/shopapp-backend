@@ -5,7 +5,6 @@ import com.example.shopapp.model.Category;
 import com.example.shopapp.repositories.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -39,6 +38,7 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public void deleteCategory(long id) {
+
         categoryRepository.deleteById(id);
     }
 }

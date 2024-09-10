@@ -3,12 +3,11 @@ package com.example.shopapp.controller;
 import com.example.shopapp.dto.OrderDTO;
 import com.example.shopapp.responses.OrderListResponse;
 import com.example.shopapp.responses.OrderResponse;
+import com.example.shopapp.services.ICartService;
 import com.example.shopapp.services.IOrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -22,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderController {
     private final IOrderService orderService;
+    private final ICartService cartService;
     @PostMapping("")
     public ResponseEntity<?> createOrder(@RequestBody @Valid OrderDTO orderDTO, BindingResult result)
     {
@@ -35,6 +35,7 @@ public class OrderController {
                 return ResponseEntity.badRequest().body(errorMessages);
             }
             OrderResponse orderResponse = orderService.createOrder(orderDTO);
+            cartService.deleteProductOfUser(orderDTO.getUserID());
             return ResponseEntity.ok().body(orderResponse);
         }
         catch (Exception e)
@@ -45,10 +46,26 @@ public class OrderController {
 
     //get information of order base on user id
     @GetMapping("/user/{user_id}")
-    public ResponseEntity<?> getOrdersUser(@Valid @PathVariable("user_id") Long userId)
+    public ResponseEntity<?> getOrdersUser(@Valid @PathVariable("user_id") Long userId,  @RequestParam(defaultValue = "", required = false) String keyword,
+                                           @RequestParam(defaultValue = "0") int page,
+                                           @RequestParam(defaultValue = "10") int limit)
     {
         try {
-            return ResponseEntity.ok().body(orderService.getAllOrders(userId));
+            PageRequest pageRequest = PageRequest.of(
+                    page, limit,
+                    //Sort.by("createdAt").descending()
+                    Sort.by("id").ascending()
+            );
+            Page<OrderResponse> orderPage = orderService
+                    .getAllOrders(keyword,userId, pageRequest)
+                    .map(OrderResponse::fromOrder);
+            int totalPages = orderPage.getTotalPages();
+            List<OrderResponse> orderResponses = orderPage.getContent();
+            return ResponseEntity.ok(OrderListResponse
+                    .builder()
+                    .orders(orderResponses)
+                    .totalPages(totalPages)
+                    .build());
         }
         catch (Exception e)
         {

@@ -55,4 +55,13 @@ public class CartService implements ICartService{
         Optional<Cart> existedCart = cartRepository.findByUserIdAndProductId(userId,productId);
         cartRepository.delete(existedCart.get());
     }
+
+    @Override
+    public void deleteProductOfUser(Long userId) throws Exception {
+       List<Cart> carts = getCartByUserId(userId);
+        for (Cart cart: carts
+             ) {
+            this.cartRepository.delete(cart);
+        }
+    }
 }

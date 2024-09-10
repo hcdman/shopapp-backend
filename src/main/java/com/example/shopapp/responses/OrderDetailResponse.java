@@ -27,8 +27,6 @@ public class OrderDetailResponse {
     private Integer numberOfProducts;
     @JsonProperty("total_money")
     private Float totalMoney;
-
-    private String color;
     public static OrderDetailResponse fromOrderDetail(OrderDetail orderDetail)
     {
        return OrderDetailResponse.builder()
@@ -37,7 +35,6 @@ public class OrderDetailResponse {
                 .product_id(orderDetail.getProduct().getId())
                 .numberOfProducts(orderDetail.getNumberOfProducts())
                 .price(orderDetail.getPrice())
-                .totalMoney(orderDetail.getTotalMoney())
-                .color(orderDetail.getColor()).build();
+                .totalMoney(orderDetail.getTotalMoney()).build();
     }
 }

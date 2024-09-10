@@ -41,9 +41,9 @@ public class WebSecurityConfig {
                                     String.format("%s/auth/outbound/authentication", apiPrefix),
                                     String.format("%s/vnpay/vnpay-payment",apiPrefix)
                             ).permitAll()
-                            .requestMatchers(HttpMethod.POST, String.format("%s/users/details", apiPrefix)).hasRole(Role.USER)
+                            .requestMatchers(HttpMethod.POST, String.format("%s/users/details", apiPrefix)).hasAnyRole(Role.USER,Role.ADMIN)
                             //category request
-                            .requestMatchers(HttpMethod.GET, String.format("%s/categories**", apiPrefix)).permitAll()
+                            .requestMatchers(HttpMethod.GET, String.format("%s/categories/**", apiPrefix)).permitAll()
                             .requestMatchers(HttpMethod.POST, String.format("%s/categories/**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(HttpMethod.PUT, String.format("%s/categories/**", apiPrefix)).hasRole(Role.ADMIN)
                             .requestMatchers(HttpMethod.DELETE, String.format("%s/categories/**", apiPrefix)).hasRole(Role.ADMIN)

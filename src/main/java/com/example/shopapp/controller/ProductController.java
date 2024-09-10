@@ -50,7 +50,7 @@ public class ProductController {
                                                        @RequestParam(defaultValue = "")  String keyword,
                                                        @RequestParam(defaultValue = "0",name = "category_id") Long categoryId,
                                                        @RequestParam(value = "page",defaultValue = "1") int page,
-                                                       @RequestParam(value="limit",defaultValue = "12") int limit
+                                                       @RequestParam(value="limit",defaultValue = "8") int limit
 
     )
     {
@@ -118,6 +118,7 @@ public class ProductController {
                 ProductImage productImage = productService.createProductImage(existedProduct.getId(), ProductImageDTO.builder()
                         .imageUrl(fileName)
                         .build());
+                existedProduct.setThumbnail(productImage.getImageUrl());
                 productImages.add(productImage);
             }
             return ResponseEntity.ok().body(productImages);

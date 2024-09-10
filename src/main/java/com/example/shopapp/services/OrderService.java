@@ -70,12 +70,11 @@ public class OrderService implements IOrderService{
             //find information of product
             Product product = productRepository.findById((productId))
                     .orElseThrow(()->new DataNotFoundException("Product not found with id : "+productId));
-
             //set information of order detail
             orderDetail.setProduct(product);
             orderDetail.setNumberOfProducts(quantity);
             orderDetail.setPrice(product.getPrice());
-
+            orderDetail.setTotalMoney(product.getPrice()*quantity);
             orderDetails.add(orderDetail);
         }
         //save information of order detail to database
@@ -121,16 +120,8 @@ public class OrderService implements IOrderService{
     }
 
     @Override
-    public List<OrderResponse> getAllOrders(Long userId) {
-        List<OrderResponse> listOrder = new ArrayList<>();
-        List<Order>  orders= orderRepository.findByUserId(userId);
-        modelMapper.typeMap(OrderDTO.class, Order.class)
-                .addMappings(mapper->mapper.skip(Order::setId));
-        for (Order order:orders)
-        {
-            listOrder.add(modelMapper.map(order,OrderResponse.class));
-        }
-        return listOrder;
+    public Page<Order> getAllOrders(String keyWord, Long userId, Pageable pageable) {
+      return orderRepository.findByKeyWordUserId(keyWord,userId,pageable);
     }
 
     @Override
