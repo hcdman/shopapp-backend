@@ -7,12 +7,11 @@ import com.example.shopapp.model.ProductImage;
 import com.example.shopapp.responses.ActionResponse;
 import com.example.shopapp.responses.ProductListResponse;
 import com.example.shopapp.responses.ProductResponse;
-import com.example.shopapp.services.IProductImageService;
-import com.example.shopapp.services.IProductService;
+import com.example.shopapp.services.ProductImageService;
+import com.example.shopapp.services.ProductService;
 import com.github.javafaker.Faker;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.boot.cfgxml.spi.CfgXmlAccessService;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,8 +41,8 @@ import java.util.stream.Collectors;
 @RequestMapping("${api.prefix}/products")
 @RequiredArgsConstructor
 public class ProductController {
-    private final IProductService productService;
-    private final IProductImageService productImageService;
+    private final ProductService productService;
+    private final ProductImageService productImageService;
     //Get all products
     @GetMapping("")
     ResponseEntity<ProductListResponse> getAllProducts(

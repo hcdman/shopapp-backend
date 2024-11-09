@@ -1,28 +1,24 @@
 package com.example.shopapp.controller;
 
 import com.example.shopapp.dto.OrderDTO;
-import com.example.shopapp.model.Order;
 import com.example.shopapp.responses.ActionResponse;
 import com.example.shopapp.responses.OrderResponse;
-import com.example.shopapp.services.ICartService;
-import com.example.shopapp.services.IOrderService;
+import com.example.shopapp.services.CartService;
+import com.example.shopapp.services.OrderService;
 import com.example.shopapp.services.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
 
 @RestController
 @RequestMapping("${api.prefix}/vnpay")
 @RequiredArgsConstructor
 public class VNPayController {
     private final VNPayService vnPayService;
-    private final IOrderService orderService;
-    private final ICartService cartService;
+    private final OrderService orderService;
+    private final CartService cartService;
     @PostMapping("/submitOrder")
     public ResponseEntity<?> submitOrder(@RequestBody OrderDTO orderDTO,
                                       HttpServletRequest request, HttpServletResponse response){

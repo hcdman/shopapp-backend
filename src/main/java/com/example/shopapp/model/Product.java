@@ -33,5 +33,4 @@ public class Product extends BaseEntity {
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY)
     private List<ProductImage> productImages;
-
 }

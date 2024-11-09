@@ -3,7 +3,7 @@ package com.example.shopapp.controller;
 import com.example.shopapp.dto.CartItemDTO;
 import com.example.shopapp.model.Cart;
 import com.example.shopapp.responses.ActionResponse;
-import com.example.shopapp.services.ICartService;
+import com.example.shopapp.services.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("${api.prefix}/carts")
 @RequiredArgsConstructor
 public class CartController {
-    private  final ICartService cartService;
+    private  final CartService cartService;
     @PostMapping("")
     ResponseEntity<?> addProductToCart(@RequestBody CartItemDTO cartItemDTO)
     {

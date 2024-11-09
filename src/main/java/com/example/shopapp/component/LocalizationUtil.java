@@ -13,7 +13,7 @@ import java.util.Locale;
 public class LocalizationUtil {
     private final MessageSource messageSource;
     private final LocaleResolver localeResolver;
-    public String getLocalizedMessage(String messageKey,Object ... params)//spread operator
+    public String getLocalizedMessage(String messageKey,Object ... params)
     {
         Locale locale = localeResolver.resolveLocale(WebUtils.getCurrentRequest());
         return messageSource.getMessage(messageKey,params,locale);

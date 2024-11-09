@@ -3,8 +3,8 @@ package com.example.shopapp.controller;
 import com.example.shopapp.dto.OrderDTO;
 import com.example.shopapp.responses.OrderListResponse;
 import com.example.shopapp.responses.OrderResponse;
-import com.example.shopapp.services.ICartService;
-import com.example.shopapp.services.IOrderService;
+import com.example.shopapp.services.CartService;
+import com.example.shopapp.services.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
@@ -20,8 +20,8 @@ import java.util.List;
 @RequestMapping("${api.prefix}/orders")
 @RequiredArgsConstructor
 public class OrderController {
-    private final IOrderService orderService;
-    private final ICartService cartService;
+    private final OrderService orderService;
+    private final CartService cartService;
     @PostMapping("")
     public ResponseEntity<?> createOrder(@RequestBody @Valid OrderDTO orderDTO, BindingResult result)
     {

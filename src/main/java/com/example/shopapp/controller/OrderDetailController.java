@@ -4,7 +4,7 @@ import com.example.shopapp.dto.OrderDetailDTO;
 import com.example.shopapp.exceptions.DataNotFoundException;
 import com.example.shopapp.model.OrderDetail;
 import com.example.shopapp.responses.OrderDetailResponse;
-import com.example.shopapp.services.IOrderDetailService;
+import com.example.shopapp.services.OrderDetailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderDetailController {
 
-    private final IOrderDetailService orderDetailService;
+    private final OrderDetailService orderDetailService;
     //Create one order detail
     @PostMapping("")
     public ResponseEntity<?> createNewOrder(@Valid @RequestBody OrderDetailDTO orderDetailDTO)

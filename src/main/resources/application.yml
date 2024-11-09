@@ -26,7 +26,7 @@ outbound:
   identity:
     client-id: ""
     client-secret: ""
-    redirect-uri: "http://localhost:4200/authenticate"
+    redirect-uri: ""
 api:
   prefix: api/v1
 jwt:
