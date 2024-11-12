@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ProductImageService implements IProductImageService{
+public class ProductImageService {
     private final ProductImageRepository productImageRepository;
-    @Override
+
     public void deleteImage(Long id) {
         productImageRepository.deleteById(id);
     }

@@ -21,11 +21,11 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ProductService implements IProductService{
+public class ProductService{
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductImageRepository productImageRepository;
-    @Override
+
     public Product createProduct(ProductDTO productDTO) throws Exception {
        Category category= categoryRepository.findById(productDTO.getCategoryId())
                 .orElseThrow(()->new DataNotFoundException("Can't find category id"));
@@ -38,17 +38,17 @@ public class ProductService implements IProductService{
         return productRepository.save(newProduct);
     }
 
-    @Override
+
     public Product getProductById(long id){
         return productRepository.findById(id).orElseThrow(()->new RuntimeException("Product is not exist!"));
     }
 
-    @Override
+
     public Page<ProductResponse> getAllProducts(String keyword,Long categoryId,PageRequest pageRequest) {
         return productRepository.findByKeywordAndCategoryId(keyword, categoryId, pageRequest).map(ProductResponse::fromProduct);
     }
 
-    @Override
+
     public Product updateProduct(long id, ProductDTO productDTO) throws DataNotFoundException {
         Product existedProduct = getProductById(id);
         if(existedProduct!=null)
@@ -65,13 +65,13 @@ public class ProductService implements IProductService{
         return null;
     }
 
-    @Override
+
     public void deleteProduct(long id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
         optionalProduct.ifPresent(productRepository::delete);
     }
 
-    @Override
+
     public ProductImage createProductImage(Long productId, ProductImageDTO productImageDTO) throws Exception {
         //check exists product
         Product existedProduct = getProductById(productId);
@@ -91,12 +91,12 @@ public class ProductService implements IProductService{
         return null;
     }
 
-    @Override
+
     public List<Product> findProductsByIds(List<Long> productIds) {
         return productRepository.findProductByIds(productIds);
     }
 
-    @Override
+
     public boolean existsByName(String name) {
         return productRepository.existsByName(name);
     }

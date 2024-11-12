@@ -16,11 +16,11 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class OrderDetailService implements IOrderDetailService{
+public class OrderDetailService{
     private final OrderDetailRepository orderDetailRepository;
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
-    @Override
+
     public OrderDetailResponse createOrderDetail(OrderDetailDTO orderDetailDTO) throws Exception {
         //check order id exist
         Order existedOrder = orderRepository.findById(orderDetailDTO.getOrderId()).orElseThrow(
@@ -42,14 +42,14 @@ public class OrderDetailService implements IOrderDetailService{
         return OrderDetailResponse.fromOrderDetail(orderDetail);
     }
 
-    @Override
+
     public OrderDetail getOrderDetail(Long id) throws DataNotFoundException {
         return orderDetailRepository.findById(id).orElseThrow(
                 ()->new DataNotFoundException("Can't find order detail with id + "+ id)
         );
     }
 
-    @Override
+
     public OrderDetail updateOrderDetail(Long id, OrderDetailDTO orderDetailDTO) throws DataNotFoundException {
         //Check existed order detail
         OrderDetail existedOrderDetail = orderDetailRepository.findById(id).orElseThrow(
@@ -71,12 +71,12 @@ public class OrderDetailService implements IOrderDetailService{
         return orderDetailRepository.save(existedOrderDetail);
     }
 
-    @Override
+
     public void deleteOrderDetail(Long id) {
         orderDetailRepository.deleteById(id);
     }
 
-    @Override
+
     public List<OrderDetail> getOrderDetails(Long orderId) throws DataNotFoundException {
         Order existedOrder = orderRepository.findById(orderId).orElseThrow(
                 ()->new DataNotFoundException("Id of order not valid")

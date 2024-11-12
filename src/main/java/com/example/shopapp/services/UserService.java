@@ -22,17 +22,17 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements IUserService{
+public class UserService{
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
     private final AuthenticationManager authenticationManager;
-    @Override
+
     public User createUser(UserDTO userDTO) throws Exception {
         String userIdentifier = userDTO.getUserIdentifier();
-        if(userRepository.existsByUserIdentifier(userIdentifier)&&userDTO.getGoogleAccountId()!=1)
+        if(userRepository.existsByUserIdentifier(userIdentifier))
         {
             throw new DataIntegrityViolationException("Phone number already exists!");
         }
@@ -41,7 +41,6 @@ public class UserService implements IUserService{
                 .userIdentifier(userDTO.getUserIdentifier())
                 .password(userDTO.getPassword())
                 .address(userDTO.getAddress())
-                .facebookAccountId(userDTO.getFacebookAccountId())
                 .googleAccountId(userDTO.getGoogleAccountId())
                 .build();
         Role role = roleRepository.findById(userDTO.getRoleId()).orElseThrow(()->new DataNotFoundException("role not found"));
@@ -57,7 +56,7 @@ public class UserService implements IUserService{
         return userRepository.save(newUser);
     }
 
-    @Override
+
     public String login(String userIdentifier, String password,Long roleId) throws Exception {
         Optional<User> optionalUser = userRepository.findByUserIdentifier(userIdentifier);
         if(optionalUser.isEmpty())
@@ -66,7 +65,7 @@ public class UserService implements IUserService{
         }
         User existedUser = optionalUser.get();
         //check password
-        if(existedUser.getGoogleAccountId()==0&&existedUser.getFacebookAccountId()==0)
+        if(existedUser.getGoogleAccountId()==0)
         {
             if(!passwordEncoder.matches(password,existedUser.getPassword()))
             {
@@ -84,11 +83,10 @@ public class UserService implements IUserService{
         return jwtTokenUtil.generateToken(existedUser); //return token
     }
 
-    @Override
     public Optional<User> getUserByUserIdentifier(String userIdentifier) throws Exception {
         return userRepository.findByUserIdentifier(userIdentifier);
     }
-    @Override
+
     public User getUserDetailFromToken(String token) throws Exception {
         if(jwtTokenUtil.isTokenExpired(token))
         {
@@ -105,7 +103,6 @@ public class UserService implements IUserService{
         }
     }
     @Transactional
-    @Override
     public User updateUser(Long userId, UpdateUserDTO updatedUserDTO) throws Exception {
         // Find the existing user by userId
         User existingUser = userRepository.findById(userId)
@@ -127,9 +124,6 @@ public class UserService implements IUserService{
         }
         if (updatedUserDTO.getAddress() != null) {
             existingUser.setAddress(updatedUserDTO.getAddress());
-        }
-        if (updatedUserDTO.getFacebookAccountId() > 0) {
-            existingUser.setFacebookAccountId(updatedUserDTO.getFacebookAccountId());
         }
         if (updatedUserDTO.getGoogleAccountId() > 0) {
             existingUser.setGoogleAccountId(updatedUserDTO.getGoogleAccountId());

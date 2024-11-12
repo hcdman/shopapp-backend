@@ -2,9 +2,9 @@ server:
   port: 8088
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/ShopApp?useSSL=false&serverTimeZone=UTC
+    url: jdbc:mysql://localhost:3306/${DB_NAME}?useSSL=false&serverTimeZone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
+    username: ${USER_NAME}
     password:
   jpa:
     show-sql: false
@@ -24,11 +24,11 @@ spring:
     default-locale: en
 outbound:
   identity:
-    client-id: ""
-    client-secret: ""
-    redirect-uri: ""
+    client-id: ${CLIENT_ID}
+    client-secret: ${CLIENT_SECRET}
+    redirect-uri: ${REDIRECT_URI}
 api:
   prefix: api/v1
 jwt:
-  expiration: 289200 #30 days = 30*24*60*60
-  secretKey: YKX7J5M9HrMFLsCgU6NpGtz8oq51nQGvkLu6F9RWOW4=
+  expiration: ${EXPIRATION}
+  secretKey: ${SECRET_KEY}

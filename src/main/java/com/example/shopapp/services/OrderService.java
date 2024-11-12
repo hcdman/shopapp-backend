@@ -26,13 +26,13 @@ import java.util.concurrent.ExecutionException;
 
 @Service
 @RequiredArgsConstructor
-public class OrderService implements IOrderService{
+public class OrderService{
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
     private  final OrderDetailRepository orderDetailRepository;
     private final ModelMapper modelMapper;
-    @Override
+
     @Transactional
     public OrderResponse createOrder(OrderDTO orderDTO) throws Exception {
         //Check exist user id
@@ -82,7 +82,7 @@ public class OrderService implements IOrderService{
         return modelMapper.map(order,OrderResponse.class);
     }
 
-    @Override
+
     public OrderResponse getOrder(Long id) throws Exception {
         Order existedOrder = orderRepository.findById(id).orElseThrow(
                 ()->new DataNotFoundException("Order not exist !")
@@ -91,7 +91,7 @@ public class OrderService implements IOrderService{
         return modelMapper.map(existedOrder,OrderResponse.class);
     }
 
-    @Override
+
     @Transactional
     public OrderResponse updateOrder(Long id, OrderDTO orderDTO) throws Exception {
         //Check exist order;
@@ -110,7 +110,7 @@ public class OrderService implements IOrderService{
         return modelMapper.map(existedOrder,OrderResponse.class);
     }
 
-    @Override
+
     @Transactional
     public void deleteOrder(Long id) throws Exception {
         Order existedOrder = orderRepository.findById(id).orElseThrow(
@@ -119,12 +119,12 @@ public class OrderService implements IOrderService{
         existedOrder.setActive(false);
     }
 
-    @Override
+
     public Page<Order> getAllOrders(String keyWord, Long userId, Pageable pageable) {
       return orderRepository.findByKeyWordUserId(keyWord,userId,pageable);
     }
 
-    @Override
+
     public Page<Order> getOrdersByKeyword(String keyword, Pageable pageable) {
         return orderRepository.findByKeyword(keyword, pageable);
     }

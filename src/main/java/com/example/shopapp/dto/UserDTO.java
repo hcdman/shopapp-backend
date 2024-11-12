@@ -27,8 +27,6 @@ public class UserDTO {
     private String password;
     @JsonProperty("retype_password")
     private String retypePassword;
-    @JsonProperty("facebook_account_id")
-    private int facebookAccountId;
     @JsonProperty("google_account_id")
     private int googleAccountId;
     @JsonProperty("role_id")

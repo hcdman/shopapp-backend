@@ -38,7 +38,6 @@ public class UserResponse {
                 .fullName(user.getFullName())
                 .userIdentifier(user.getUserIdentifier())
                 .address(user.getAddress())
-                .active(user.isActive())
                 .role(user.getRole())
                 .build();
     }

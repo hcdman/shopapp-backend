@@ -9,26 +9,26 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CategoryService implements ICategoryService {
+public class CategoryService{
     private final CategoryRepository categoryRepository;
-    @Override
+
     public Category createCategory(CategoryDTO category) {
         Category newCategory = Category.builder().name(category.getName()).build();
 
         return categoryRepository.save(newCategory);
     }
 
-    @Override
+
     public Category getCategoryById(long id) {
         return categoryRepository.findById(id).orElseThrow(()->new RuntimeException("Category not found"));
     }
 
-    @Override
+
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
 
-    @Override
+
     public Category updateCategory(long id, CategoryDTO category) {
         Category existingCategory = getCategoryById(id);
         existingCategory.setName(category.getName());
@@ -36,7 +36,7 @@ public class CategoryService implements ICategoryService {
         return existingCategory;
     }
 
-    @Override
+
     public void deleteCategory(long id) {
 
         categoryRepository.deleteById(id);

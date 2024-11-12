@@ -3,6 +3,7 @@ import com.example.shopapp.component.LocalizationUtil;
 import com.example.shopapp.dto.UserDTO;
 import com.example.shopapp.dto.UserLoginDTO;
 import com.example.shopapp.responses.LoginResponse;
+import com.example.shopapp.responses.UserResponse;
 import com.example.shopapp.services.AuthenticationService;
 import com.example.shopapp.services.UserService;
 import com.example.shopapp.utils.MessageKeys;
@@ -44,8 +45,7 @@ public class    AuthenticationController {
             {
                 return ResponseEntity.badRequest().body("Your retype password is not match");
             }
-            userService.createUser(userDTO);
-            return ResponseEntity.ok(userDTO);
+            return ResponseEntity.ok(UserResponse.fromUser(userService.createUser(userDTO)));
         }
         catch (Exception e)
         {
@@ -56,8 +56,6 @@ public class    AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody UserLoginDTO userLoginDTO)
     {
-        //check login and create token
-        //response token
         try {
             String token = userService.login(userLoginDTO.getPhoneNumber(),userLoginDTO.getPassword(), userLoginDTO.getRoleId());
             LoginResponse loginResponse = new LoginResponse();

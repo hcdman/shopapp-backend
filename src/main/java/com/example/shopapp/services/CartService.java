@@ -15,11 +15,10 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CartService implements ICartService{
+public class CartService{
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
-    @Override
     public void addProduct(CartItemDTO cartItemDTO) throws Exception {
         Optional< Cart> cart = cartRepository.findByUserIdAndProductId(cartItemDTO.getUserId(),cartItemDTO.getProductId());
         if(cart.isPresent())
@@ -45,18 +44,17 @@ public class CartService implements ICartService{
         }
     }
 
-    @Override
     public List<Cart> getCartByUserId(Long userId) throws Exception {
         return cartRepository.findByUserId(userId);
     }
 
-    @Override
+
     public void deleteProductInCart(Long userId, Long productId) throws Exception {
         Optional<Cart> existedCart = cartRepository.findByUserIdAndProductId(userId,productId);
         cartRepository.delete(existedCart.get());
     }
 
-    @Override
+
     public void deleteProductOfUser(Long userId) throws Exception {
        List<Cart> carts = getCartByUserId(userId);
         for (Cart cart: carts

@@ -32,10 +32,6 @@ public class User extends BaseEntity implements UserDetails {
     private String address;
     @Column(name = "password",length = 200)
     private String password;
-    @Column(name = "is_active")
-    private boolean active;
-    @Column(name = "facebook_account_id")
-    private int facebookAccountId;
     @Column(name = "google_account_id")
     private int googleAccountId;
     @ManyToOne

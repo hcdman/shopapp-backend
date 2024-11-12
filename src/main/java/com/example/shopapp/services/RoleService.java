@@ -9,9 +9,8 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class RoleService implements IRoleService{
+public class RoleService{
     private final RoleRepository roleRepository;
-    @Override
     public List<Role> getAllRoles() {
         return roleRepository.findAll();
     }
