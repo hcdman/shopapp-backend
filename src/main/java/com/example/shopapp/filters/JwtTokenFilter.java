@@ -38,7 +38,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response); //enable bypass
             } else {
                 final String authHeader = request.getHeader("Authorization");
-                if (authHeader == null && !authHeader.startsWith("Bearer ")) {
+                if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
                     return;
                 }

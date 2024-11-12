@@ -21,7 +21,7 @@ public class UserController {
     public ResponseEntity<?> getUserDetails(@RequestHeader("Authorization") String token)
     {
         try {
-            String extractedToken = token.substring(7); //"bearer "
+            String extractedToken = token.substring(7);
             User user = userService.getUserDetailFromToken(extractedToken);
             return  ResponseEntity.ok().body(UserResponse.fromUser(user));
         } catch (Exception e) {
@@ -39,7 +39,6 @@ public class UserController {
 
             String extractedToken = authorizationHeader.substring(7);
             User user = userService.getUserDetailFromToken(extractedToken);
-            // Ensure that the user making the request matches the user being updated
             if (user.getId() != userId) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }

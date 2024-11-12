@@ -14,7 +14,6 @@ public class CategoryService{
 
     public Category createCategory(CategoryDTO category) {
         Category newCategory = Category.builder().name(category.getName()).build();
-
         return categoryRepository.save(newCategory);
     }
 

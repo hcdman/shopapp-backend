@@ -15,17 +15,10 @@ import java.util.Date;
 public class UpdateUserDTO {
     @JsonProperty("fullname")
     private String fullName;
-
     @JsonProperty("user_identifier")
     private String userIdentifier;
-
     private String address;
-
     private String password;
-
-    @JsonProperty("facebook_account_id")
-    private int facebookAccountId;
-
     @JsonProperty("google_account_id")
     private int googleAccountId;
 }

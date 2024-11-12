@@ -3,17 +3,16 @@ package com.example.shopapp.controller;
 import com.example.shopapp.component.LocalizationUtil;
 import com.example.shopapp.dto.CategoryDTO;
 import com.example.shopapp.model.Category;
-import com.example.shopapp.responses.CategoryResponse;
 import com.example.shopapp.responses.ActionResponse;
+import com.example.shopapp.responses.CategoryResponse;
 import com.example.shopapp.services.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.LocaleResolver;
+
 import java.util.List;
 
 
@@ -22,10 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
-    private final LocaleResolver localeResolver;
-    private final MessageSource messageSource;
     private final LocalizationUtil localizationUtils;
-
     @PostMapping("")
     public ResponseEntity<CategoryResponse> createCategory(
             @Valid @RequestBody CategoryDTO categoryDTO,
@@ -42,6 +38,7 @@ public class CategoryController {
         }
         Category category = categoryService.createCategory(categoryDTO);
         categoryResponse.setCategory(category);
+        categoryResponse.setMessage("Insert category successfully!");
         return ResponseEntity.ok(categoryResponse);
     }
 
