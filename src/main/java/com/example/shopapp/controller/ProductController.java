@@ -43,7 +43,6 @@ import java.util.stream.Collectors;
 public class ProductController {
     private final ProductService productService;
     private final ProductImageService productImageService;
-    //Get all products
     @GetMapping("")
     ResponseEntity<ProductListResponse> getAllProducts(
                                                        @RequestParam(defaultValue = "")  String keyword,
